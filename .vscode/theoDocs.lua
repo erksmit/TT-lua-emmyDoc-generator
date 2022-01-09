@@ -1,33 +1,37 @@
+-- tt lua docs
+
+---@class font
+
+---@class array : Array A set of tools to extend Lua's quite simple arrays with more intuitive, traditional methods.
 ---@type Array
 Array = Array
----@class array : Array A set of tools to extend Lua's quite simple arrays with more intuitive, traditional methods.
 ---@class Array A set of tools to extend Lua's quite simple arrays with more intuitive, traditional methods.
----@field add fun(): number Adds an object to the array.  An index can be provided to specify a position for insertion.
----@field addAll fun(): number Adds an object to the array.  An index can be provided to specify a position for insertion.
----@field clear any Clears the array by removing all elements.  The resulting size of the array will be 0.
----@field contains fun(): boolean Returns true iff the given object is part of the array.
----@field copy fun() Returns a copy of the array.
+---@field add fun(element?: any, index?: number): number Adds an object to the array.  An index can be provided to specify a position for insertion.
+---@field addAll fun(arr: any, index?: number): number Adds an object to the array.  An index can be provided to specify a position for insertion.
+---@field clear fun() Clears the array by removing all elements.  The resulting size of the array will be 0.
+---@field contains fun(element: any): boolean Returns true iff the given object is part of the array.
+---@field copy fun(): array Returns a copy of the array.
 ---@field count fun(predicate: function): number Counts how many elements fulfill a given predicate.
 ---@field exists fun(predicate: function): boolean Returns true iff at least one element matches the given predicate.
----@field filter fun(): array Creates a copy that only contains filtered elements.
----@field find fun(): number Returns the index of an object in the array.  If the array doesn't contain it the function returns -1.
----@field forEach fun() Iterates over all elements of the array and applieds a function on them. This is especially useful to avoid explicit use of a for loop. However, this functional style comes at an allocation and performance cost because of the function. Use it when it suits your needs.
----@field isEmpty fun() Returns true iff the array is empty.  This is equivalent to checking the size size of the array being 0 manually.
+---@field filter fun(filterFunction: function): array Creates a copy that only contains filtered elements.
+---@field find fun(element: any): number Returns the index of an object in the array.  If the array doesn't contain it the function returns -1.
+---@field forEach fun(callbackFunction: function) Iterates over all elements of the array and applieds a function on them. This is especially useful to avoid explicit use of a for loop. However, this functional style comes at an allocation and performance cost because of the function. Use it when it suits your needs.
+---@field isEmpty fun(): boolean Returns true iff the array is empty.  This is equivalent to checking the size size of the array being 0 manually.
 ---@field join fun(separator?: string): string Joins the contents of the array into a string using the specified separator.
----@field map fun(): array Maps all elements to a new array using a given function.
----@field pick fun() Returns a random element of the array.  Returns nil if the array is empty.
+---@field map fun(mapFunction: function): array Maps all elements to a new array using a given function.
+---@field pick fun(): any Returns a random element of the array.  Returns nil if the array is empty.
 ---@field remove fun(element: any): boolean Removes the first appearance of an object from the array.
----@field removeAt fun(i: number) Removes the object at a specific index.
+---@field removeAt fun(i: number): any Removes the object at a specific index.
 ---@field shuffle fun() Shuffles the elements of the array into a random order.  The function uses math.random internally so that the result is dependent on the current random seed value. To get different results for different runs you might call      math.randomseed(os.time())   at the start of your program.                               Usage:              local a = Array{0, 1, 2, 3, 4, 5, 6} a:shuffle() print(tostring(a))  --Prints {5, 3, 4, 1, 6, 2, 0}
----@field sort fun() Uses natural order of the elements in the array to sort them. You can optionally provide your own function for comparing two elements.
----@field sub fun(): array Creates a sub-array for the specified range.
+---@field sort fun(compFunc?: function) Uses natural order of the elements in the array to sort them. You can optionally provide your own function for comparing two elements.
+---@field sub fun(startIndex: number, length?: number): array Creates a sub-array for the specified range.
 
 ---@type Builder
 Builder = Builder
 ---@class Builder Functions to create and destroy buildings, roads, trees and more.
 ---@field buildBuilding fun(draft: draft, x: number, y: number, frame?: number): boolean Tries to build the given building draft at the specified position and sets it's frame if a frame was specified.  Returns true iff the build was was successful.
----@field buildFence fun(fence: draft, x: number, y: number, edge: number) Builds fence on the specified edge of a tile.
----@field buildFenceAround fun(fence: draft, x: number, y: number, width: number, height: number) Builds fence around the specified rectangle area.
+---@field buildFence fun(fence: draft, x: number, y: number, edge: number): boolean Builds fence on the specified edge of a tile.
+---@field buildFenceAround fun(fence: draft, x: number, y: number, width: number, height: number): boolean Builds fence around the specified rectangle area.
 ---@field buildGround fun(draft: draft, x: number, y: number): boolean Builds the specified ground draft and returns true iff building was successful.
 ---@field buildPipe fun(draft: draft, x0: number, y0: number, x1?: number, y1?: number): boolean Tries to build the given pipe draft along the given line.  Returns true if building was successful.
 ---@field buildRoad fun(draft: draft, x0: number, y0: number, x1: number, y1: number, level0?: number, level1?: number, bridge?: boolean): boolean Tries to build the given road draft along the given line.  Returns true if building was successful.
@@ -44,7 +48,7 @@ Builder = Builder
 ---@field getWirePrice fun(draft: draft, x0: number, y0: number, x1?: number, y1?: number): number Returns the price to build a wire.  May change with time.
 ---@field getZonePrice fun(draft: draft, x: number, y: number): number Returns the price to build the given zone.  May change with time.
 ---@field isBuildingBuildable fun(draft: draft, x: number, y: number, checkZone?: boolean, checkRoad?: boolean): boolean Checks whether the specified building draft can be built at the given position x, y.  Returns true iff the building can be built.
----@field isFenceBuildable fun(fence: draft, x: number, y: number, edge: number) Checks whether the fence can be built on the specified edge of a tile.
+---@field isFenceBuildable fun(fence: draft, x: number, y: number, edge: number): boolean Checks whether the fence can be built on the specified edge of a tile.
 ---@field isGroundBuildable fun(draft: draft, x: number, y: number): boolean Returns true iff the ground draft can be built at the given location.
 ---@field isPipeBuildable fun(draft: draft, x0: number, y0: number, x1?: number, y1?: number): boolean Checks whether the specified pipe draft can be build along the given line x0,y0 - x1,y1.  A valid line has to fulfill the property x0 == x1 or y0 == y1.
 ---@field isRoadBuildable fun(draft: draft, x0: number, y0: number, x1: number, y1: number, level0?: number, level1?: number, bridge?: boolean): boolean Checks whether the specified road draft can be build along the given line x0,y0 - x1,y1.  To build a bridge manually you have to set level0 = level1 and bridge = true Only a single lane will be built so a valid line has to fulfill the property x0 == x1 or y0 == y1
@@ -52,42 +56,42 @@ Builder = Builder
 ---@field isTreeBuildable fun(draft: draft, x: number, y: number): boolean Checks whether the specified tree draft can be built at the specified position.
 ---@field isWireBuildable fun(draft: draft, x0: number, y0: number, x1?: number, y1?: number): boolean Checks whether the specified wire draft can be build along the given line x0,y0 - x1,y1.  A valid line has to fulfill the property x0 == x1 or y0 == y1.
 ---@field remove fun(x: number, y: number): boolean Removes any from the specified location.
----@field removeFence fun(x: number, y: number, edge: number) Removes the fence on the specified edge of a tile.
----@field removeFenceWithin fun(x: number, y: number, width: number, height: number) Removes any fence within the specified rectangle area.
+---@field removeFence fun(x: number, y: number, edge: number): boolean Removes the fence on the specified edge of a tile.
+---@field removeFenceWithin fun(x: number, y: number, width: number, height: number): boolean Removes any fence within the specified rectangle area.
 ---@field removePipe fun(x: number, y: number): boolean Dedicated remove function to remove pipes only.
----@field removeRoadDeco fun(x: number, y: number, level?: number, index?: number) Removes all or a specific road decoration from a specified road.
+---@field removeRoadDeco fun(x: number, y: number, level?: number, index?: number): boolean Removes all or a specific road decoration from a specified road.
 ---@field removeWire fun(x: number, y: number, level: number): boolean Dedicated remove function to remove wires only.
 
 ---@type Building
 Building = Building
 ---@class Building Building library for TheoTown
----@field abandonBuilding any Abandons this (RCI) building.  It will be empty afterwards.
----@field extinguish any Extinguishes the fire of this building in case it's burning.
+---@field abandonBuilding fun() Abandons this (RCI) building.  It will be empty afterwards.
+---@field extinguish fun() Extinguishes the fire of this building in case it's burning.
 ---@field getAnimationFrame fun(slot?: number): number or nil Returns the current frame of an animation that is attached to this building.
----@field getBuildHeight any Retruns the height of the building.  Multiply by 8 to get an estimation for actual pixel height.
----@field getDaysBuilt any Returns the number of days since this building was constructed. Negative values indicate non finished buildings.
----@field getFrame any Returns the current frame of the building.
----@field getHeight any Retruns the height of the base area of the building.
----@field getId any Shortcut for the id of the building's draft.
----@field getName any Gets the name of this building.
----@field getPerformance any Returns the current performance of this building.  1.0 represents 100%.
----@field getStorage any Returns the storage table of the building. Storage tables can be used to save information into cities/buildings/roads permanently.
----@field getText any Returns the text set to the building.
----@field getWidth any Retruns the width of the base area of the building.
----@field getXY any Returns the pivot position of this building.  The returned point can differ from the location used to retrieve this building object for buildings that have a size bigger than 1.
----@field hasNeededRoad any Returns true iff this building needs a road connection and also has a road connection.
----@field hasRoad any Returns true iff this building has a road connection (even if it doesn't require one according to its json).
+---@field getBuildHeight fun(): number Returns the height of the building.  Multiply by 8 to get an estimation for actual pixel height.
+---@field getDaysBuilt fun(): number Returns the number of days since this building was constructed. Negative values indicate non finished buildings.
+---@field getFrame fun(): number Returns the current frame of the building.
+---@field getHeight fun(): number Returns the height of the base area of the building.
+---@field getId fun(): string Shortcut for the id of the building's draft.
+---@field getName fun(): string or nil Gets the name of this building.
+---@field getPerformance fun(): number Returns the current performance of this building.  1.0 represents 100%.
+---@field getStorage fun(): table Returns the storage table of the building. Storage tables can be used to save information into cities/buildings/roads permanently.
+---@field getText fun(): string or nil Returns the text set to the building.
+---@field getWidth fun(): number Returns the width of the base area of the building.
+---@field getXY fun(): number, number Returns the pivot position of this building.  The returned point can differ from the location used to retrieve this building object for buildings that have a size bigger than 1.
+---@field hasNeededRoad fun(): boolean Returns true iff this building needs a road connection and also has a road connection.
+---@field hasRoad fun(): boolean Returns true iff this building has a road connection (even if it doesn't require one according to its json).
 ---@field hasUpgrade fun(upgradeId: string): boolean Returns true iff this building has a specific upgrade applied to it.
 ---@field isAnimationPaused fun(slot?: number): boolean or nil Resumes an animation that is attached to this building.
----@field isBurning any Returns true iff this building is burning right now.
----@field isEmpty any Returns true iff this building is empty right now. This means that people left it. Only happens for RCI buildings.
----@field isFullOfDeadPeople any Returns true iff this building has transport issues with dead bodies right now.
----@field isFullOfWaste any Returns true iff this building is full of garbage right now.
----@field isIll any Returns true iff this building contains ill people right now.
----@field isInConstruction any Returns true iff this building is in construction right now.
----@field isUntouchable any Determines whether this (RCI) building is untouchable. An untouchable building is protected in terms of it won't be replaced by automatically spawned buildings.
----@field isUpgradeInConstruction any Returns true iff this building has a pending upgrade right now.
----@field isWorking any Returns true iff this building is working right now. A working building has road connection if needed, is not in construction and is not empty. It also has power and water if needed.
+---@field isBurning fun(): boolean Returns true iff this building is burning right now.
+---@field isEmpty fun(): boolean Returns true iff this building is empty right now. This means that people left it. Only happens for RCI buildings.
+---@field isFullOfDeadPeople fun(): boolean Returns true iff this building has transport issues with dead bodies right now.
+---@field isFullOfWaste fun(): boolean Returns true iff this building is full of garbage right now.
+---@field isIll fun(): boolean Returns true iff this building contains ill people right now.
+---@field isInConstruction fun(): boolean Returns true iff this building is in construction right now.
+---@field isUntouchable fun(): boolean Determines whether this (RCI) building is untouchable. An untouchable building is protected in terms of it won't be replaced by automatically spawned buildings.
+---@field isUpgradeInConstruction fun(): boolean Returns true iff this building has a pending upgrade right now.
+---@field isWorking fun(): boolean Returns true iff this building is working right now. A working building has road connection if needed, is not in construction and is not empty. It also has power and water if needed.
 ---@field pauseAnimation fun(slot?: number): number or nil Pauses an animation that is attached to this building.
 ---@field resumeAnimation fun(slot?: number, speed?: number): number or nil Resumes an animation that is attached to this building.
 ---@field setAnimationFrame fun(frame: number, slot?: number): boolean or nil Sets the current frame of an animation regardless of whether the animation is playing right now.
@@ -99,65 +103,65 @@ Building = Building
 
 ---@type City
 City = City
----@class City This library contains functions to access and modfiy city information, general buildings and roads.
----@field alert fun(actionPlaceType: any, x: any, y: any) Sets an action marker (or removes the one previously set there).
+---@class City This library contains functions to access and modfiy city information,   general buildings and roads.
+---@field alert fun(actionPlaceType: number, x: number, y: number) Sets an action marker (or removes the one previously set there).
 ---@field canSpend fun(amount: number) Returns true if the specified amount of money can be spend by the city.
 ---@field countBuildings fun(draft?: draft): number Returns the overall amount of buildings.  Optionally of a specific draft. This can for example be used to iterate over all buildings of a draft by using City.getBuilding(index, draft).
 ---@field countBuildingsOfType fun(type: string, level?: number): number Returns the number of buildings of a specific building type.
----@field countCars any Returns number of cars that are active right now.  This includes operatonal cars and trains.
----@field countPipes any Returns the overall amount of pipes in the city.
+---@field countCars fun(): number Returns number of cars that are active right now.  This includes operatonal cars and trains.
+---@field countPipes fun(): number Returns the overall amount of pipes in the city.
 ---@field countRoads fun(draft?: draft): number Returns the overall amount of roads.  Optionally of a specific draft. This can for example be used to iterate over all roads (of a draft) by using City.getRoad(index, draft).
----@field countWires any Returns the overall amount of wires in the city.
+---@field countWires fun(): number Returns the overall amount of wires in the city.
 ---@field earnCurrency fun(name: any, amount: any) Earns amount of the currency named name.      Privileged:               This function requires privileged plugin permissions. You can obtain these by becoming a trusted plugin creator.
 ---@field earnMoney fun(amount: number, x?: number, y?: number, showOverlay?: boolean, budgetItem?: draft) Earns some money.  If x, y is provided (and >= 0) then the money will be drawn as if it was earned at the provided place (green text). If showOverlay is true and overlay for the money will be shown (default is false).      Privileged:               This function requires privileged plugin permissions. You can obtain these by becoming a trusted plugin creator.
 ---@field enableDisaster fun(name: string, state?: boolean) Enables or disables the automatic disaster of the given name.
 ---@field execute fun(cmd: string, receiver: function) Executes a command as if it was entered into the console.
 ---@field exit fun(save?: boolean) Closes the current city and will go back to region view.
----@field getAbsoluteDay any Returns the current absolute day of the city.
----@field getAuthor any Returns the name of the author that the player entered
----@field getBackground any Returns the current background draft of the city.
----@field getBuilding fun(index: number, draft?: draft): number,number Gets the position of a specific building of a specific draft by it's index. The index starts with 1 and ranges up to City.countBuildings(draft).
+---@field getAbsoluteDay fun(): number Returns the current absolute day of the city.
+---@field getAuthor fun(): string Returns the name of the author that the player entered
+---@field getBackground fun(): draft Returns the current background draft of the city.
+---@field getBuilding fun(index: number, draft?: draft): number, number Gets the position of a specific building of a specific draft by it's index. The index starts with 1 and ranges up to City.countBuildings(draft).
 ---@field getCommercialJobs fun(level?: number, progress?: boolean): number Returns the total commercial jobs per level.
----@field getCurrency fun(name: any) Returns the available amount of the currency of the given name. E.g. City.getCurreny('bus currency')
----@field getDay any Returns the current day of the month of the city. The value ranges from 1 to 30.
----@field getDayPart any Returns the current part of the day with 0 being the start and 1 being the end. You can use City.getDay() + City.getDayPart() as a game speed dependent time source that does not wrap around like City.getTime() does.
----@field getDisaster any Returns the name of the curretly active disaster or nil if no disaster is is active right now.
----@field getFileName any Returns the name of the file of the city.
+---@field getCurrency fun(name: any): number, string Returns the available amount of the currency of the given name. E.g. City.getCurreny('bus currency')
+---@field getDay fun(): number Returns the current day of the month of the city. The value ranges from 1 to 30.
+---@field getDayPart fun(): number Returns the current part of the day with 0 being the start and 1 being the end. You can use City.getDay() + City.getDayPart() as a game speed dependent time source that does not wrap around like City.getTime() does.
+---@field getDisaster fun(): string Returns the name of the curretly active disaster or nil if no disaster is is active right now.
+---@field getFileName fun(): string Returns the name of the file of the city.
 ---@field getFunVar fun(name: string, fallbackValue?: number): number Returns the value of the classic fun variable of the given name or fallbackValue if no such variable has been defined, yet. fallbackValue is 0 by default. Note that fun variables can only contain numbers. Use City.getStorage() or TheoTown.getStorage() to store more fancy stuff. Global fun variables are indicated by a leading ! in it's name.
----@field getHappiness fun(): number Returns the average happiness.
----@field getHeight any Height of the city in tiles
----@field getId fun(): string Returns the id of the city.
----@field getIncome any Returns the monthly income of the city.
+---@field getHappiness fun(happinessType?: string): number Returns the average happiness.
+---@field getHeight fun(): number Height of the city in tiles
+---@field getId fun(): string Returns the ID of the city.
+---@field getIncome fun(): number Returns the monthly income of the city.
 ---@field getIndustrialJobs fun(level?: number, progress?: boolean): number Returns the total industrial jobs per level.
----@field getMoney any Returns the estate of the city.
----@field getMonth any Returns the current month of the city. The value ranges from 1 to 12.
----@field getName any Name of the current city
----@field getOwnerId any Returns the id of the owner of the city if the city is online.
----@field getOwnerName any Returns the name of the owner of the city if the city is online.
----@field getPeople fun(level: any) Returns the number of the specified level (0, 1 or 2).  Returns the number of all people if no level was specified.
----@field getPipe fun(index: number): number,number Returns the index'th pipe's x,y location of the city. Can be used to iterate over all pipes of the city by using City.countPipes() to determine the overall amount of pipes.
----@field getPlayTime any Returns the play time in this city in seconds.
----@field getRank any Returns the current rank draft and the rank index.
----@field getRegionId any Returns the id of the region or nil if the city is not in a region. The id of a reqion is (in theory) unique. For online regions it is just a number.
----@field getRegionName any Returns the name of the region this city is located in.  Returns nil for for individual cities.
+---@field getMoney fun(): number Returns the estate of the city.
+---@field getMonth fun(): number Returns the current month of the city. The value ranges from 1 to 12.
+---@field getName fun(): string Name of the current city
+---@field getOwnerId fun(): string Returns the id of the owner of the city if the city is online.
+---@field getOwnerName fun(): string Returns the name of the owner of the city if the city is online.
+---@field getPeople fun(level: any): number Returns the number of the specified level (0, 1 or 2).  Returns the number of all people if no level was specified.
+---@field getPipe fun(index: number): number, number Returns the index'th pipe's x,y location of the city. Can be used to iterate over all pipes of the city by using City.countPipes() to determine the overall amount of pipes.
+---@field getPlayTime fun(): number Returns the play time in this city in seconds.
+---@field getRank fun(): draft, number Returns the current rank draft and the rank index.
+---@field getRegionId fun(): string Returns the id of the region or nil if the city is not in a region. The id of a reqion is (in theory) unique. For online regions it is just a number.
+---@field getRegionName fun(): string Returns the name of the region this city is located in.  Returns nil for for individual cities.
 ---@field getResidentialSpace fun(level?: number, progress?: boolean): number Returns the residential space (in buildings) per level.
----@field getRoad fun(index: number, draft?: draft): number Gets the position and level of a specific road (of a specific draft) by it's index.
----@field getRotation any Returns the current rotation of the city.  City rotation is expressed with an number number 0 (unrotated), ..., 3
----@field getSeed any Returns the seed that was used to generate the city
----@field getSpeed fun() Returns the current simulation speed of the city.
----@field getStorage any Use this storage table to save things city wide
----@field getTime any Returns the animation time of the game in milliseconds.
----@field getView any Returns the tile position the camera is currently looking at as well as the current scale.  Format: x, y, scale
----@field getWidth any Width of the city in tiles
----@field getWire fun(index: number): number,number,level Returns the index'th wire's x,y,level location of the city. Can be used to iterate over all wires of the city by using City.countWires() to determine the overall amount of wires.
----@field getXp any Returns the amount of xp of the city.
----@field getYear any Returns the current year of the city. The value starts at 1.
----@field hash fun(x?: number, y?: number) Returns a pseudo random positive 32bit number number. The returned number is only dependent on the city and - if specified - on the provided x,y location. The returned value can be used to generate peusdo random values that are fixed per city/city and location. This can be useful to produce seemingly random but yet deterministic behavior.
----@field isOnline any Indicates whether this city is an online city.
----@field isReadonly any Indicates whether this city is readonly.  Cities that are readonly can not be saved. For example foreign cities in online regions are read only.
----@field isSandbox any Determines whether the city is in free or sandbox mode
----@field isUber any Returns true if uber is activated for that city.
----@field issueDisaster fun() Issues the disaster of the given name at the given position x, y. Returns true iff disaster was issued successfully.
+---@field getRoad fun(index: number, draft?: draft): number, number, number Gets the position and level of a specific road (of a specific draft) by it's index.
+---@field getRotation fun(): number Returns the current rotation of the city.  City rotation is expressed with an number number 0 (unrotated), ..., 3
+---@field getSeed fun(): number  Returns the seed that was used to generate the city
+---@field getSpeed fun(): number Returns the current simulation speed of the city.
+---@field getStorage fun(): table Use this storage table to save things city wide
+---@field getTime fun(): number Returns the animation time of the game in milliseconds.
+---@field getView fun(): number, number, number Returns the tile position the camera is currently looking at as well as the current scale.  Format: x, y, scale
+---@field getWidth fun(): number Width of the city in tiles
+---@field getWire fun(index: number): number, number, number Returns the index'th wire's x,y,level location of the city. Can be used to iterate over all wires of the city by using City.countWires() to determine the overall amount of wires.
+---@field getXp fun(): number Returns the amount of experience of the city.
+---@field getYear fun(): number Returns the current year of the city. The value starts at 1.
+---@field hash fun(x?: number, y?: number): number Returns a pseudo random positive 32bit number number. The returned number is only dependent on the city and - if specified - on the provided x,y location. The returned value can be used to generate peusdo random values that are fixed per city/city and location. This can be useful to produce seemingly random but yet deterministic behavior.
+---@field isOnline fun(): boolean Indicates whether this city is an online city.
+---@field isReadonly fun(): boolean Indicates whether this city is readonly.  Cities that are readonly can not be saved. For example foreign cities in online regions are read only.
+---@field isSandbox fun(): boolean Determines whether the city is in free or sandbox mode
+---@field isUber fun(): boolean Returns true if uber is activated for that city.
+---@field issueDisaster fun(name: string, x?: number, y?: number, radius?: number, radioactive?: boolean): boolean Issues the disaster of the given name at the given position x, y. Returns true iff disaster was issued successfully.
 ---@field load fun(path: string, overwrite?: boolean, private?: boolean, target?: string) Loads a city file provided by the plugin.  path is the file of the city file (thus it includes the .city file ending). Prior to loading the city will be copied to maps or private maps folder first (depending on private value). If a city of similar file name already exists at that directory it will be overridden if overwrite flag is set. The target file name can be changed by specifieing a target name.
 ---@field noise fun(x: number, y: number, z?: number, w?: number): number Returns a noise value for the specified coordinates.
 ---@field openInfo fun(infoType: string) Opens the city information screen of the given type.
@@ -168,10 +172,10 @@ City = City
 ---@field setBackground fun(draft?: draft) Sets a background.
 ---@field setFunVar fun(name: string, value: number) Sets the value of a classic fun variable called name. Note that fun variables can only contain numbers. Use City.getStorage() or TheoTown.getStorage() to store more fancy stuff. Global fun variables are indicated by a leading ! in it's name.
 ---@field setName fun(newName: any) Sets a new city name
----@field setRotation fun(r: any) Sets the rotation of the city
+---@field setRotation fun(r: any): number  Sets the rotation of the city
 ---@field setSpeed fun(speed: number) Sets the simulation speed of the city.  The following values are allowed:  0 for paused  1 for slow  2 for normal  3 for fast  4 for ultra fast
 ---@field setView fun(x: number, y: number, scale?: number) Sets the view to a specified tile x, y using the provided scale.  If no scale is provided the current scale will be used. Scale 1 means no scaling, 2 times scaling etc.
----@field setXp fun(xp: number) Sets the amount of xp of the city.      Privileged:               This function requires privileged plugin permissions. You can obtain these by becoming a trusted plugin creator.
+---@field setXp fun(xp: number) Sets the experience amount of the city.      Privileged:               This function requires privileged plugin permissions. You can obtain these by becoming a trusted plugin creator.
 ---@field showNotification fun(tableOfArguments: table) Shows a notification. See here for an example.
 ---@field spawnCar fun(carDraft: draft, startX: number, startY: number, targetX: number, targetY: number, frame?: number) Spawns a car at a given position / position of a building that drives to the given target / building at the target. The car will actually not spawned immediately but after a path has been calculated. This happens asynchronously since path calculation is heavy on computation. You can provide a frame to determine the actualy type of the car. It will be random by default.
 ---@field spendCurrency fun(name: any, amount: any) Spends amount of the currency named name.
@@ -227,8 +231,8 @@ City = City
 ---@type DSA
 DSA = DSA
 ---@class DSA This library contains functions associated with the DSA integration.
----@field getSupplies any Returns the supplies of DSA rocket station.
----@field isInMoon any Returns true iff user is currently in moon.
+---@field getSupplies fun(): number or nil Returns the supplies of DSA rocket station.
+---@field isInMoon fun(): boolean Returns true iff user is currently in moon.
 
 ---@type Debug
 Debug = Debug
@@ -237,55 +241,56 @@ Debug = Debug
 ---@field log fun(message1: any, message2?: any, message3?: any, ...?: any) Logs a message into the script internal log.
 ---@field toast fun(message1: any, message2?: any, message3?: any, ...?: any) Shows the specified message as toast overlay. It's discouraged to call this function too often since new messages are postponsed if a previous message is still displayed.
 
+---@class draft : Draft
 ---@type Draft
 Draft = Draft
----@class draft : Draft
 ---@class Draft Draft library for TheoTown
----@field append fun() Adds a JSON code to the list of JSON codes that will be loaded by the game. Can only be called during the main call of the Lua script. That is, when the script's main body is called. Can be useful to generate JSON code dynamically.
+---@field append fun(json: string) Adds a JSON code to the list of JSON codes that will be loaded by the game. Can only be called during the main call of the Lua script. That is, when the script's main body is called. Can be useful to generate JSON code dynamically.
 ---@field callAll fun(name: string, arg1?: any, arg2?: any, ...?: any) Calls the event function called name on all scripts if defined.
 ---@field getDraft fun(id: string): draft Returns the draft of the given id.  nil is returned if no draft of the given id was found.
 ---@field getDrafts fun(tag?: string): array Returns an array of drafts that have the given tag defined.  If no tag is provided this function returns a list of all available drafts.
----@field merge fun() Merges the provided JSON object into the json object that is being loaded by the game right now. Can only be called during the main call of the Lua script. That is, when the script's main body is called. Can be useful to define JSON code dynamically for the current draft. Will only have an effect for attributes that were not read by the game, yet.
+---@field merge fun(json: string) Merges the provided JSON object into the json object that is being loaded by the game right now. Can only be called during the main call of the Lua script. That is, when the script's main body is called. Can be useful to define JSON code dynamically for the current draft. Will only have an effect for attributes that were not read by the game, yet.
 ---@field call fun(name: string, arg1?: any, arg2?: any, ...?: any) Calls the event function called name on all scripts of the draft if defined.
----@field getAuthor any Returns the author of the draft as defined in it's json definition.
+---@field getAuthor fun(): string Returns the author of the draft as defined in it's json definition.
 ---@field getDiamondPrice fun(): number Returns the diamond price defined for this draft.  Not all draft types support to have a price. In the desktop version of the game this function will always return 0.
 ---@field getFrame fun(frameIndex?: number): number Returns a frame specified by its index (starting with 1).
----@field getFrameCount any Returns the number of frames defined in that draft.  Only available for draft types that use frames (e.g. buildings, roads and cars).
----@field getHeight any Returns the height of the building.  Only available for building drafts.
----@field getId any Returns the id of the draft.
----@field getMeta any Returns the meta table of the draft if available.  nil otherwise.
----@field getMonthlyPrice any Returns the monthly price defined for this draft.  Not all draft types support to have a monthly price.
----@field getPluginId any Returns the plugin id of the plugin the draft belongs to. Only plugins downloaded from Plugin Store have such an id.
+---@field getFrameCount fun(): number Returns the number of frames defined in that draft.  Only available for draft types that use frames (e.g. buildings, roads and cars).
+---@field getHeight fun(): number Returns the height of the building.  Only available for building drafts.
+---@field getId fun(): string Returns the ID of the draft.
+---@field getMeta fun(): table Returns the meta table of the draft if available.  nil otherwise.
+---@field getMonthlyPrice fun(): number Returns the monthly price defined for this draft.  Not all draft types support to have a monthly price.
+---@field getPluginId fun(): number Returns the plugin ID of the plugin the draft belongs to. Only plugins downloaded from Plugin Store have such an id.
 ---@field getPreviewFrame fun(frameIndex?: number): number Returns a preview frame specified by its index (starting with 1).
----@field getPreviewFrameCount any Returns the number of preview frames defined in that draft. Preview frames are frames used to preview the draft in the toolbar.
----@field getPrice any Returns the price defined for this draft.  Not all draft types support to have a price.
----@field getScripts any Returns an array of all attached scripts to this draft. Don't modify the returned array.
----@field getText any Returns the localized description of the draft.
----@field getTitle any Returns the localized title of the draft.
----@field getType any Returns a string that represents the concrete type of the draft.
----@field getWidth any Returns the width of the building.  Only available for building drafts.
----@field isAnimation any Returns true iff the draft defines an animation.
----@field isBuilding any Returns true iff the draft defines a building.
----@field isCar any Returns true iff the draft defines a car.
----@field isCategory any Returns true iff the draft defines a category.
----@field isCommercial any Returns true iff the draft defines a commercial building.
----@field isFinal any Returns true iff the draft is declared as final (isFinal in json definition).  Cannot be altered during runtime.
----@field isGround any Returns true iff the draft defines a ground type.
----@field isIndustrial any Returns true iff the draft defines a industrial building.
+---@field getPreviewFrameCount fun(): number Returns the number of preview frames defined in that draft. Preview frames are frames used to preview the draft in the toolbar.
+---@field getPrice fun(): number Returns the price defined for this draft.  Not all draft types support to have a price.
+---@field getScripts fun(): array Returns an array of all attached scripts to this draft. Do not modify the returned array.
+---@field getText fun(): string Returns the localized description of the draft.
+---@field getTitle fun(): string Returns the localized title of the draft.
+---@field getType fun(): string Returns a string that represents the concrete type of the draft.
+---@field getWidth fun(): number Returns the width of the building.  Only available for building drafts.
+---@field isAnimation fun(): boolean Returns true iff the draft defines an animation.
+---@field isBuilding fun(): boolean Returns true iff the draft defines a building.
+---@field isCar fun(): boolean Returns true iff the draft defines a car.
+---@field isCategory fun(): boolean Returns true iff the draft defines a category.
+---@field isCommercial fun(): boolean Returns true iff the draft defines a commercial building.
+---@field isFinal fun(): boolean Returns true iff the draft is declared as final (isFinal in json definition).  Cannot be altered during runtime.
+---@field isGround fun(): boolean Returns true iff the draft defines a ground type.
+---@field isIndustrial fun(): boolean Returns true iff the draft defines a industrial building.
 ---@field isLoaded fun(): boolean True unless the plugin is unloaded right now.  This happens for example when the user enters a city in online mode that doesn't allow plugins.
----@field isPlugin any Returns true iff the draft is part of a plugin (also local ones).
----@field isPrivileged any Returns true iff the draft is privileged.
----@field isRCI any Returns true iff the draft defines a building that is either residential, commercial or industrial.
----@field isResidential any Returns true iff the draft defines a residential building.
----@field isRoad any Returns true iff the draft defines a road.
----@field isRoadDecoration any Returns true iff the draft defines a road decoration.
----@field isTemplate any Returns true iff the draft defines a draft template.
----@field isTree any Returns true iff the draft defines a tree.
----@field isUnlocked any Returns whether this draft is unlocked. A draft can be locked if e.g. it depends on a feature to be available.
----@field isVisible any Returns true iff the draft is visible (corresponds to negated hidden attribute in json).
+---@field isPlugin fun(): boolean Returns true iff the draft is part of a plugin (also local ones).
+---@field isPrivileged fun(): boolean Returns true iff the draft is privileged.
+---@field isRCI fun(): boolean Returns true iff the draft defines a building that is either residential, commercial or industrial.
+---@field isResidential fun(): boolean Returns true iff the draft defines a residential building.
+---@field isRoad fun(): boolean Returns true iff the draft defines a road.
+---@field isRoadDecoration fun(): boolean Returns true iff the draft defines a road decoration.
+---@field isTemplate fun(): boolean Returns true iff the draft defines a draft template.
+---@field isTree fun(): boolean Returns true iff the draft defines a tree.
+---@field isUnlocked fun(): boolean Returns whether this draft is unlocked. A draft can be locked if e.g. it depends on a feature to be available.
+---@field isVisible fun(): boolean Returns true iff the draft is visible (corresponds to negated hidden attribute in json).
 ---@field setFrame fun(frameIndex: number, frame: number) Overrides a frame by index.  Starting index is 1.
 ---@field setPreviewFrame fun(frameIndex: number, frame: number) Overrides a frame by index.  Starting index is 1.
 ---@field setVisible fun(state: boolean) Sets the visibility state of the draft (corresponds to negated hidden attribute in json). For buildings the visibility state defined whether they are present in the toolbar. You may have to call City.rebuildUI() for the change to become visible in the toolarbar.
+
 
 ---@type Drawing
 Drawing = Drawing
@@ -299,16 +304,16 @@ Drawing = Drawing
 ---@field drawText fun(text: string, x: number, y: number, font?: font, centerX?: number, centerY?: number) Draws a text.
 ---@field drawTileImage fun(frame: number) Draws a tile frame on the currently set tile.  A tile frame is supposed to lay flat on the ground. The magic of this function is to draw the frame correctly on slopes. Use this function e.g. for drawing tool markers on the ground.
 ---@field drawTriangle fun(x0: number, y0: number, x1: number, y1: number, x2: number, y2: number, frame?: number) Draws a triangle.  If no frame is provided a white triangle will be drawn. As the game is optimized to draw quads it is more efficient to draw a quad using Drawing.drawQuad rather than drawing two triangles.
----@field getAdditive any Returns the current additive factor for drawing.
----@field getAlpha any Returns the current transparency for drawing.
----@field getColor any Returns the current drawing color.
----@field getImageHandle fun(frame: number): number Returns the handle of an image/frame.
----@field getImageSize fun(frame: number): number Returns the size of an image/frame.
----@field getScale any Returns the current scale factors set by setScale.
----@field getSize any Returns the current screen size width, height in pixels. Note that the result may change over time due to resolution changes.
----@field getTextSize fun(text: string, font?: font): number Queries the drawing size for a given text.
----@field reset any Resets all drawing properties.  It's good practice to call this function before using other Drawing functions.
----@field resetClipping any Resets clipping so that draw functions affect all pixels again.
+---@field getAdditive fun(): number Returns the current additive factor for drawing.
+---@field getAlpha fun(): number Returns the current transparency for drawing.
+---@field getColor fun(): number, number, number Returns the current drawing color.
+---@field getImageHandle fun(frame: number): number, number Returns the handle of an image/frame.
+---@field getImageSize fun(frame: number): number, number Returns the size of an image/frame.
+---@field getScale fun(): number, number Returns the current scale factors set by setScale.
+---@field getSize fun(): number, number  Returns the current screen size width, height in pixels. Note that the result may change over time due to resolution changes.
+---@field getTextSize fun(text: string, font?: font): number, number Queries the drawing size for a given text.
+---@field reset fun() Resets all drawing properties.  It's good practice to call this function before using other Drawing functions.
+---@field resetClipping fun() Resets clipping so that draw functions affect all pixels again.
 ---@field setAdditive fun(additive: number) Sets the additive factor used for additive drawing.  Additive drawing simply adds the colors to the background instead of mixing them.
 ---@field setAlpha fun(alpha: number) Sets the transparency for drawing.
 ---@field setClipping fun(x: number, y: number, w: number, h: number) Sets the clipping rect to a specified rectangle. Consecutive calls to drawing functions will only afftect pixels within that rectangle.
@@ -321,33 +326,33 @@ GUI = GUI
 ---@class GUI Allows to access UI elements of the game.
 ---@field createDialog fun(args: table): table Shows a dialog on the screen.  See the GUI Compendium for the parameters that can be provided in the args table.
 ---@field createMenu fun(args: table) Shows a menu with various actions in it.  An easy way to allow the user to pick from a set of things. See the GUI Compendium for the parameters that can be provided in the args table.
----@field createRenameDialog fun(): table Shows a dialog that allows the user to enter some text.  The game uses this dialog for rename operations, search query input and so on. You can use a textfield object instead if it suits your needs. Having a separate dialog prevents you from dealing with the quirks that some of the textfield implementations can have.
+---@field createRenameDialog fun(args: table): table Shows a dialog that allows the user to enter some text.  The game uses this dialog for rename operations, search query input and so on. You can use a textfield object instead if it suits your needs. Having a separate dialog prevents you from dealing with the quirks that some of the textfield implementations can have.
 ---@field get fun(id: string): GUI Finds a GUI object by its id. An id can be assigned to any GUI object to find it using this function. Some game made GUI objects also have an id that you can find using this function.
----@field getRoot fun() Returns the root GUI object. The root GUI object is a panel that streches along the whole screen. All other GUI objects are directly or indirectly children of this object. The padding of this object leaves space for e.g. notches. This means that the inner area of this object represents the safe area where you can place stuff.
----@field addHotkey fun() Adds a hotkey to a GUI object.  If the button gets pressed the GUI objects onClick callback function will be called. Usually used for buttons.
----@field countChildren fun() Returns the number of children GUI objects this object has.
+---@field getRoot fun(): GUI Returns the root GUI object. The root GUI object is a panel that streches along the whole screen. All other GUI objects are directly or indirectly children of this object. The padding of this object leaves space for e.g. notches. This means that the inner area of this object represents the safe area where you can place stuff.
+---@field addHotkey fun(key: number) Adds a hotkey to a GUI object.  If the button gets pressed the GUI objects onClick callback function will be called. Usually used for buttons.
+---@field countChildren fun(): number Returns the number of children GUI objects this object has.
 ---@field delete fun() Removes this GUI object from the active GUI hierarchy which will effectively delete it.
----@field getAbsoluteParent fun() Returns the top-most parent of this GUI object. This object is not valid anymore if its aboslute parent isn't the root GUI object. If the object has no parent the object itself will be returned.
----@field getAbsoluteX fun() Returns the absolute x location of the GUI object. This matches the x coordinate you would use for drawing or would find in touchpoints.
----@field getAbsoluteY fun() Returns the absolute y location of the GUI object. This matches the y coordinate you would use for drawing or would find in touchpoints.
+---@field getAbsoluteParent fun(): GUI Returns the top-most parent of this GUI object. This object is not valid anymore if its aboslute parent isn't the root GUI object. If the object has no parent the object itself will be returned.
+---@field getAbsoluteX fun(): number Returns the absolute x location of the GUI object. This matches the x coordinate you would use for drawing or would find in touchpoints.
+---@field getAbsoluteY fun(): number Returns the absolute y location of the GUI object. This matches the y coordinate you would use for drawing or would find in touchpoints.
 ---@field getChild fun(index: number): GUI Gets a child by its index. The index ranges from 1 to :countChildren() of the parent object.
----@field getChildIndex fun() Gets the child index of this GUI object.
----@field getClientHeight fun() Returns the height of the inner area of the GUI object. The inner height is the height that is available for child objects. That is the height minus the top and bottom padding.
----@field getClientWidth fun() Returns the width of the inner area of the GUI object. The inner width is the width that is available for child objects. That is the width minus the left and right padding.
----@field getFont fun() Gets the font of a GUI object. Only text related objects support this function, e.g. labels, buttons, ... Text fields do not support this function.
----@field getHeight fun() Returns the height of the GUI object.
----@field getId fun() Gets id of the GUI object. An id can be assigned to any GUI object to identify it.
----@field getPadding fun() Returns the padding of this GUI object. Padding defines the distances between the inner area to the border of this object.
----@field getParent fun() Returns the parent GUI object of this object. Can be nil if this is the root object or if this object is not valid anymore (that means not part of the active GUI hierarchy).
----@field getText fun() Returns the text of a GUI object. Only text related object support this function, e.g. labels, buttons, text fields, ...
----@field getTouchPoint fun() Returns the active touch point that is active in this GUI object if there is any and if this object is touch sensitive (like buttons, canvases, ...). The values returned are all nil otherwise.
----@field getWidth fun() Returns the width of the GUI object.
----@field getX fun() Returns the local x location of the GUI object relative to its parent.
----@field getY fun() Returns the local y location of the GUI object relative to its parent.
+---@field getChildIndex fun(): number Gets the child index of this GUI object.
+---@field getClientHeight fun(): number Returns the height of the inner area of the GUI object. The inner height is the height that is available for child objects. That is the height minus the top and bottom padding.
+---@field getClientWidth fun(): number Returns the width of the inner area of the GUI object. The inner width is the width that is available for child objects. That is the width minus the left and right padding.
+---@field getFont fun(): font Gets the font of a GUI object. Only text related objects support this function, e.g. labels, buttons, ... Text fields do not support this function.
+---@field getHeight fun(): number Returns the height of the GUI object.
+---@field getId fun(): string Gets id of the GUI object. An id can be assigned to any GUI object to identify it.
+---@field getPadding fun(): number, number, number, number Returns the padding of this GUI object. Padding defines the distances between the inner area to the border of this object.
+---@field getParent fun(): GUI Returns the parent GUI object of this object. Can be nil if this is the root object or if this object is not valid anymore (that means not part of the active GUI hierarchy).
+---@field getText fun(): string Returns the text of a GUI object. Only text related object support this function, e.g. labels, buttons, text fields, ...
+---@field getTouchPoint fun(): number, number, number, number, number, number, number Returns the active touch point that is active in this GUI object if there is any and if this object is touch sensitive (like buttons, canvases, ...). The values returned are all nil otherwise.
+---@field getWidth fun(): number Returns the width of the GUI object.
+---@field getX fun(): number Returns the local x location of the GUI object relative to its parent.
+---@field getY fun(): number Returns the local y location of the GUI object relative to its parent.
 ---@field isActive fun(): boolean For text fields: returns whether the text field is currently selected for input.
----@field isEnabled fun() Returns whether this GUI object is enabled right now. A disabled object will not be clickable. Disabled buttons will be drawn differently.
----@field isValid fun() Determines whether this GUI object is valid. A GUI object is valid if it's part of the current GUI hierarchy.
----@field isVisible fun() Returns whether this GUI object is set to be visible right now.
+---@field isEnabled fun(): boolean Returns whether this GUI object is enabled right now. A disabled object will not be clickable. Disabled buttons will be drawn differently.
+---@field isValid fun(): boolean Determines whether this GUI object is valid. A GUI object is valid if it's part of the current GUI hierarchy.
+---@field isVisible fun(): boolean Returns whether this GUI object is set to be visible right now.
 ---@field layout fun() Issues a recalculation of this GUI object's layout and its children. Calling this function should not be necessary since it will usually be called automatically when an object changes.
 ---@field removeHotkey fun(key: number): boolean Removes a hotkey from the GUI object.
 ---@field setActive fun() Marks a text field as active, meaning that it will be focused for user input.
@@ -366,17 +371,17 @@ GUI = GUI
 Runtime = Runtime
 ---@class Runtime Functions to access general runtime information.
 ---@field fromJson fun(json: string): table Converts a json string into a lua table.
----@field getId any Package id of the app, should be 'info.flowersoft.theotown.theotown'
----@field getModel any Returns model name and manufacturer of the device.
----@field getName any Name of the application, should be 'TheoTown'
----@field getOSVersion any Returns the version code of the os (e.g.  Android API level).
----@field getPlatform any Returns a string that represents that platform TheoTown is running on right now.  E.g. 'android', 'ios' or 'desktop'.
----@field getTime any Unix timestamp in milliseconds
----@field getUuid any Returns a random uuid string.
----@field getVersion any Current version of TheoTown, e.g.  1.5.15
----@field getVersionCode any Current version of TheoTown as number, e.g.  1515
----@field isDebug any Returns true iff game is currently running on a debug build.  Should always return false.
----@field isPremium any Returns true iff this copy of TheoTown is a premium version.
+---@field getId fun(): string Package id of the app, should be 'info.flowersoft.theotown.theotown'
+---@field getModel fun(): string,string Returns model name and manufacturer of the device.
+---@field getName fun(): string Name of the application, should be 'TheoTown'
+---@field getOSVersion fun(): number,string Returns the version code of the os (e.g.  Android API level).
+---@field getPlatform fun(): string Returns a string that represents that platform TheoTown is running on right now.  E.g. 'android', 'ios' or 'desktop'.
+---@field getTime fun(): number Unix timestamp in milliseconds
+---@field getUuid fun(): string Returns a random uuid string.
+---@field getVersion fun(): string Current version of TheoTown, e.g.  1.5.15
+---@field getVersionCode fun(): number Current version of TheoTown as number, e.g.  1515
+---@field isDebug fun(): boolean Returns true iff game is currently running on a debug build.  Should always return false.
+---@field isPremium fun(): boolean Returns true iff this copy of TheoTown is a premium version.
 ---@field postpone fun(func: function, delayMS?: number) Postpones the execution of a function. Postponed functions will be executed synchronously once per frame. You can optionally set a minimum time to wait until execution.
 ---@field toJson fun(table: table): string Converts a table into a json string.
 
@@ -388,72 +393,72 @@ Script = Script
 ---@field EVENT_CAR_REACHED any Will be called for building with car spawner whenever a car reached it's target.
 ---@field EVENT_CAR_SPAWNED any Will be called for building with car spawner whenever a car was spawned.
 ---@field EVENT_FINISHED any Will be called for building and road drafts right after construction. That is immediately after placements for roads and for buildings witht zero buildtime.
----@field EVENT_PLACED fun() Will be called for building and road drafts right after placement.                              See also:               script:event
+---@field EVENT_PLACED any Will be called for building and road drafts right after placement.                              See also:               script:event
 ---@field EVENT_REMOVE any Will be called for scripts attached to a building or road the moment before it gets removed.
 ---@field EVENT_TOOL_ENTER any Will be called for scripts attached to a generic tool when users selects the tool.
 ---@field EVENT_TOOL_LEAVE any Will be called for scripts attached to a generic tool when users closes the tool. Be aware of that the tool will not be closes automatically when the user leaves the city.
 ---@field EVENT_UPGRADE any Will be called for scripts attached to a building after an upgarde of it was finished.
----@field getScript any Returns the current script or nil if no script is running right now. Since scripts are executed synchronously to avoid race conditions there can only be one script running.
+---@field getScript fun(): script Returns the current script or nil if no script is running right now. Since scripts are executed synchronously to avoid race conditions there can only be one script running.
 ---@field getScripts fun(tag?: any): array Returns an array of all scripts, or, if tag is specified, an array of all scripts that defined the given tag. Don't manipulate the returned array directly.
 ---@field addScript fun(name: string, draft: draft, initializer?: function): script Adds a script to a draft.  Only call this method in the init or lateInit methods to ensure that it will be executed correctly. However, init and/or lateInit might not be called on the new script automatically. Format of initializer: initializer(script) If no initializer is provided the own initializer will be used. Returns the newly created script.
 ---@field addTag fun(tag: any) Adds a tag to this script.  Tags can be used to find scripts by using getScripts(tag).
----@field getDraft any Returns the draft the script is attached to.  Every script instance is attached to exactly one draft. However, multiple instances of the same script may be attached to different drafts.
----@field getId any Every script is uniquely identified by a single number. Note that this identifier is only constant during runtime. It may be different in the next session, therefore you shouldn't rely on it.
----@field getLocation any Returns a readable location identifier that contains the draft id.
----@field getName any Returns the name of the script.  E.g. the name of a script      folder/test.lua   is just test.
----@field getParent any Returns the parent script if there is any, nil otherwise. A parent script is the script that instantiated this script using script:addScript() Scripts are usually not instantiated by other scripts.
----@field getParents any Returns an array of all parent scripts.
----@field getPath any Returns the relative path of the script.
----@field getTags any Returns an array that contains the tags that have been defined for that script.
----@field isActive any Determines whether the script is active right now.
+---@field getDraft fun(): draft Returns the draft the script is attached to.  Every script instance is attached to exactly one draft. However, multiple instances of the same script may be attached to different drafts.
+---@field getId fun(): number Every script is uniquely identified by a single number. Note that this identifier is only constant during runtime. It may be different in the next session, therefore you shouldn't rely on it.
+---@field getLocation fun(): string Returns a readable location identifier that contains the draft id.
+---@field getName fun(): string Returns the name of the script.  E.g. the name of a script      folder/test.lua   is just test.
+---@field getParent fun(): script Returns the parent script if there is any, nil otherwise. A parent script is the script that instantiated this script using script:addScript() Scripts are usually not instantiated by other scripts.
+---@field getParents fun(): array Returns an array of all parent scripts.
+---@field getPath fun(): string Returns the relative path of the script.
+---@field getTags fun(): array Returns an array that contains the tags that have been defined for that script.
+---@field isActive fun(): boolean Determines whether the script is active right now.
 ---@field setActive fun(state: boolean) Activates or disables the script.  No event methods will be called on disabled scripts. A disabled script cannot re-enable itself since it won't be updated anymore.
----@field buildCityGUI any Will be called after the city GUI was built.  When entering the city stage this method will not always be called due to GUI caching.
+---@field buildCityGUI fun() Will be called after the city GUI was built.  When entering the city stage this method will not always be called due to GUI caching.
 ---@field click fun(x: number, y: number, level: number) Will be called when users taps on a building/road of this draft while being in default tool. Return false to prevent opening the default tile dialog. You should favor this method over earlyTap() and tap() as they operate indepently of tile dialog and selected tool and don't take the own draft into consideration. This method will also be called for custom tools if user taps on a tile and script:isBuildable() returned true for it.
 ---@field daily fun(x: any, y: any, level: any) Will be called on a daily basis for every building or road that are instances of the owning draft.  Level is 0 for buildings.
----@field disable any Will be called when this script is about to be disabled.
+---@field disable fun() Will be called when this script is about to be disabled.
 ---@field draw fun(x: number, y: number, level: number) Will be called after a building/road instance has been drawn. Will also be called on all visible tiles for custom tools.
----@field drawCity any This event function will be called right after the city was drawn.  If you want to draw something directly on top of the city it's a good idead to do it in here.
----@field earlyInit any Will be called on all scripts before script:init().  Use this method to set up early things.
+---@field drawCity fun() This event function will be called right after the city was drawn.  If you want to draw something directly on top of the city it's a good idead to do it in here.
+---@field earlyInit fun() Will be called on all scripts before script:init().  Use this method to set up early things.
 ---@field earlyTap fun(tileX: number, tileY: number, x: number, y: number) Will be called when the user taps on the map.  Will be called just before the tap is handled by the current tool.
----@field enable any Will be called when this script is about to be enabled.  Scripts are enabled by definiton right after their creation so this method won't be called then.
----@field enterCity any Will be called when the user enters a city.
+---@field enable fun() Will be called when this script is about to be enabled.  Scripts are enabled by definiton right after their creation so this method won't be called then.
+---@field enterCity fun() Will be called when the user enters a city.
 ---@field enterCityGeneration fun(phase: number) Will be called right before a new city is generated.
 ---@field enterStage fun(name: string) Will be called whenever the user enters a stage.  A stage is for example a city, the settings screen or the gallery.
----@field event fun() Will be called for building/road/tool events of instances of the owning draft. Level is 0 for buildings. Be careful not to do any meaningful work when receiving removal event since that could cause cassade enless calling of event functions. Use Runtime.postpone() to prevent that.                     Changes:               1.10.07: Add level and source values for car related events.
+---@field event fun(x: number, y: number, level: number, event: number, source: draft) Will be called for building/road/tool events of instances of the owning draft. Level is 0 for buildings. Be careful not to do any meaningful work when receiving removal event since that could cause cassade enless calling of event functions. Use Runtime.postpone() to prevent that.                     Changes:               1.10.07: Add level and source values for car related events.
 ---@field exit fun() Will be called when the game gets closed.  There is no guarantee that This function will actually be called.
 ---@field finishInformationDialog fun(x: number, y: number, lvl: number, dialog: table) Gets called after the information dialog for buildings and/or roads was built. Only gets called for buildings/roads this script is attached to.
----@field init any Will be called once after all drafts and scripts have been loaded.
+---@field init fun() Will be called once after all drafts and scripts have been loaded.
 ---@field isBuildable fun(x: any, y: any, level: any) For buildings and roads only: Will be queried to determine if a building/road can be built at a specific location.  To prevent buildability just let it return false. Is also queried for custom tools to determine buildability.
----@field lateInit any Will be called once after script:init() has been called on all scripts.  Use this method for things that relay on other scripts' setup.
----@field leaveCity any Will be called when the user leaves the city.  Don't rely on this method to permanently save state since there's no guarantee that this method will be called.
+---@field lateInit fun() Will be called once after script:init() has been called on all scripts.  Use this method for things that relay on other scripts' setup.
+---@field leaveCity fun() Will be called when the user leaves the city.  Don't rely on this method to permanently save state since there's no guarantee that this method will be called.
 ---@field leaveCityGeneration fun(phase: any) Will be called after city generation process was completed.
----@field leaveStage any Will be called whenever the user leaves a stage.  A stage is for example a city, the settings screen or the gallery.
+---@field leaveStage fun() Will be called whenever the user leaves a stage.  A stage is for example a city, the settings screen or the gallery.
 ---@field load fun() Will be called after lateInit and when the draft is reloaded after it was unloaded e.g.  for an online mode region that does not allow plugins.
----@field nextDay any Will be called on a daily basis for each script.
----@field nextMonth any Will be called on a monthly basis for each script.
----@field nextYear any Will be called on a yearly basis for each script.
----@field overlay any Will be called once per frame after UI has been drawn.  Will also be called outside of cities.
+---@field nextDay fun() Will be called on a daily basis for each script.
+---@field nextMonth fun() Will be called on a monthly basis for each script.
+---@field nextYear fun() Will be called on a yearly basis for each script.
+---@field overlay fun() Will be called once per frame after UI has been drawn.  Will also be called outside of cities.
 ---@field random fun(x: number, y: number) Will be called every day for scripts whose owning draft is a building or road.  x and y is a random (valid) postion on the map.
----@field save any Will be called just before the city is saved.
----@field settings any Will be called when rebuilding the settings page of the game. Can return a table contains settings items that will then be displayed. See here on how to use it.
+---@field save fun() Will be called just before the city is saved.
+---@field settings fun() Will be called when rebuilding the settings page of the game. Can return a table contains settings items that will then be displayed. See here on how to use it.
 ---@field tap fun(tileX: number, tileY: number, x: number, y: number) Will be called when the user taps on the map.  Will be called just after the tap is handled by the current tool.
 ---@field unload fun() Will be called before the plugin get's unloaded.  This happens for example when the user enters a city in online mode that doesn't allow plugins.
----@field update any Will be called per frame for each script while a city is open.  Can be used to draw stuff on the screen (under the UI). Use overlay() do draw on top of UI and/or outside of cities.
+---@field update fun() Will be called per frame for each script while a city is open.  Can be used to draw stuff on the screen (under the UI). Use overlay() do draw on top of UI and/or outside of cities.
 
 ---@type TheoTown
 TheoTown = TheoTown
 ---@class TheoTown TheoTown specific functions that don't fit into other libraries.
 ---@field execute fun(cmd: string, receiver: function) Executes a command as if it was entered into the console.
----@field getDiamonds any Returns the number of diamonds that the user currently has.
----@field getFileStorage any Returns a game wide storage table that's backed by an actual file. The file will even persist if the user deleted the game. Only a deletion of the TheoTown folder will reset this storage.
+---@field getDiamonds fun(): number Returns the number of diamonds that the user currently has.
+---@field getFileStorage fun(): table Returns a game wide storage table that's backed by an actual file. The file will even persist if the user deleted the game. Only a deletion of the TheoTown folder will reset this storage.
 ---@field getGlobalFunVar fun(name: string, fallbackValue?: number): number Returns the value of the global fun variable of the given name or fallbackValue if no such variable has been defined, yet. fallbackValue is 0 by default. Note that fun variables can only contain numbers. Use City.getStorage() or TheoTown.getStorage() to store more fancy stuff. Global fun variables are indicated by a leading ! in their name.
----@field getPlayTime any Returns the play time in the game in seconds.
----@field getStorage any Returns a game wide storage table.  Use it to save data permanently across all cities.
----@field getUserName any Returns the name of the current logged in user or nil if the player is not logged in.
----@field isMultiplayer any Returns true iff this version of the game is capable of running multiplayer mode.
+---@field getPlayTime fun(): number Returns the play time in the game in seconds.
+---@field getStorage fun(): table Returns a game wide storage table.  Use it to save data permanently across all cities.
+---@field getUserName fun(): string Returns the name of the current logged in user or nil if the player is not logged in.
+---@field isMultiplayer fun(): boolean Returns true iff this version of the game is capable of running multiplayer mode.
 ---@field loadCity fun(path: string, overwrite?: boolean, private?: boolean, target?: string) Loads a city file provided by the plugin.  path is the file of the city file (thus it includes the .city file ending). Prior to loading the city will be copied to maps or private maps folder first (depending on private value). If a city of similar file name already exists at that directory it will be overridden if overwrite flag is set. The target file name can be changed by specifieing a target name.
 ---@field playSound fun(sound: draft, volume?: number, loop?: boolean): table Plays a sound.
----@field registerCommand fun() Registers a function that can then by called from console. Instead of a name you can provide a function that returns true for commands the second function should handle.
+---@field registerCommand fun(name: string, action: function) Registers a function that can then by called from console. Instead of a name you can provide a function that returns true for commands the second function should handle.
 ---@field setGlobalFunVar fun(name: string, value: number) Sets the value of a global fun variable called name. Note that fun variables can only contain numbers. Use City.getStorage() or TheoTown.getStorage() to store more fancy stuff. Global fun variables are indicated by a leading ! in their name.
 ---@field spendDiamonds fun(amount: number): boolean Spends amount diamonds if possible.
 ---@field translate fun(id: string): string Translates an id into the corressponding string. Instead of TheoTown.translate('key') you can write Translation.key for convenience.
@@ -463,7 +468,7 @@ TheoTown = TheoTown
 Tile = Tile
 ---@class Tile Contains functions to query single tiles for information about objects on them.
 ---@field abandonBuilding fun(x: number, y: number) Abandons the building at the given location.
----@field countRoadDecos fun(x: number, y: number, level: number) Returns the number of decorations on the road at a given position and level.
+---@field countRoadDecos fun(x: number, y: number, level: number): number Returns the number of decorations on the road at a given position and level.
 ---@field extinguishBurningBuilding fun(x: number, y: number) Extinguishes the fire of a building at a given position.
 ---@field getBuilding fun(x: any, y: any): Building Returns a building object that can be use to call building related functions more conveniently.
 ---@field getBuildingAnimationFrame fun(x: number, y: number, slot?: number): number or nil Returns the current frame of an animation that is attached to a building.
@@ -474,12 +479,12 @@ Tile = Tile
 ---@field getBuildingPerformance fun(x: number, y: number): number Returns the current performance of a building at a given position. 1.0 represents 100%.
 ---@field getBuildingStorage fun(x: number, y: number): table Returns the storage table of the building at a given position. Storage tables can be used to save information into cities/buildings/roads permanently.
 ---@field getBuildingXY fun(x: number, y: number): number,number Returns the pivot position of a building at a given position.  That point can differ from the queried position for buildings that have a size bigger than 1.
----@field getFenceDraft fun(x: number, y: number, edge: number) Returns the fence draft of the fence at the given location at the given edge. As fences are technically placed in-between tiles two neighboring tiles always share an edge in between them.  Because of that the following formulas should hold true:       For edge 0 (south-east):  Tile.getFenceDraft(x, y, 0) == Tile.getFenceDraft(x + 1, y, 2)      For edge 1 (north-east):  Tile.getFenceDraft(x, y, 1) == Tile.getFenceDraft(x, y + 1, 3)      For edge 2 (north-west):  Tile.getFenceDraft(x, y, 2) == Tile.getFenceDraft(x - 1, y, 0)      For edge 3 (south-west):  Tile.getFenceDraft(x, y, 3) == Tile.getFenceDraft(x, y - 1, 1)    Queries to tiles that are not inside the city should behave accordingly.
+---@field getFenceDraft fun(x: number, y: number, edge: number): draft or nil Returns the fence draft of the fence at the given location at the given edge. As fences are technically placed in-between tiles two neighboring tiles always share an edge in between them.  Because of that the following formulas should hold true:       For edge 0 (south-east):  Tile.getFenceDraft(x, y, 0) == Tile.getFenceDraft(x + 1, y, 2)      For edge 1 (north-east):  Tile.getFenceDraft(x, y, 1) == Tile.getFenceDraft(x, y + 1, 3)      For edge 2 (north-west):  Tile.getFenceDraft(x, y, 2) == Tile.getFenceDraft(x - 1, y, 0)      For edge 3 (south-west):  Tile.getFenceDraft(x, y, 3) == Tile.getFenceDraft(x, y - 1, 1)    Queries to tiles that are not inside the city should behave accordingly.
 ---@field getGroundDraft fun(x: number, y: number, level?: number): draft Returns the ground draft at a given position.
 ---@field getGroundHeight fun(x: number, y: number): number Returns the legacy ground height at a given position. Ground height is a legacy system used for terrain shading and water depth coloring. It was added to the game before there were actual hills.
 ---@field getInfluence fun(influenceType?: number, x: number, y: number): number Returns the influence value of a influence type at a given position.
 ---@field getPipeDraft fun(x: number, y: number): draft or nil Returns the draft of the pipe at a given location.
----@field getPipeFrame fun(x: number, y: number) Returns the active frame of the pipe at a given location. This frame is independent of city rotation.
+---@field getPipeFrame fun(x: number, y: number): number or nil Returns the active frame of the pipe at a given location. This frame is independent of city rotation.
 ---@field getRoadCarCount fun(x: number, y: number, level: number): number Returns the absolute car counter of the road at a given position and level. The car counter is incremented for each car that has entered that road. You can use it to track the number of passed by cars in a certain time frame.
 ---@field getRoadChargeableCarCount fun(x: number, y: number, level: number): number Returns the absolute chargeable car counter of the road at a given position and level. The car counter is incremented for each chargeable car that has entered that road. You can use it to track the number of passed by chargeable cars in a certain time frame.
 ---@field getRoadDeco fun(x: number, y: number, level: number, index?: number): draft Returns the draft of the road decoration on the road at a given position and level.
@@ -492,13 +497,13 @@ Tile = Tile
 ---@field getTreeDraft fun(x: number, y: number): draft Returns the draft of the tree at the given position.
 ---@field getTreeFrame fun(x: number, y: number): number Returns the frame of the tree at the given position.
 ---@field getWireDraft fun(x: number, y: number, level?: number): draft or nil Returns the draft of the wire at a given location.
----@field getWireFrame fun(x: number, y: number, level?: number) Returns the frame of the wire at a given location. Frame indices are zero based and city rotation independent.
+---@field getWireFrame fun(x: number, y: number, level?: number): number or nil Returns the frame of the wire at a given location. Frame indices are zero based and city rotation independent.
 ---@field getZoneDraft fun(x: number, y: number): draft or nil Returns the draft of the zone at a given location.
 ---@field hasBuildingNeededRoad fun(x: number, y: number): boolean Returns true iff there's a building at a given position that needs a road connection but also has a road connection.
 ---@field hasBuildingRoad fun(x: number, y: number): boolean Returns true iff there's a building at a given position that has a road connection.
 ---@field hasBuildingUpgrade fun(upgradeId: string, x: number, y: number): boolean Returns true iff the building at a given position has a specific upgrade applied to it.
----@field hasFence fun(x: number, y: number) Returns true iff there is any fence at the given location.
----@field hasFenceWithin fun(x: number, y: number, width: number, height: number) Returns true iff there is any fence within a specifiedc rectangle.
+---@field hasFence fun(x: number, y: number): boolean Returns true iff there is any fence at the given location.
+---@field hasFenceWithin fun(x: number, y: number, width: number, height: number): boolean Returns true iff there is any fence within a specifiedc rectangle.
 ---@field hasRoad fun(x: number, y: number): boolean Returns true if there's any raod at the given position regardless of the level.
 ---@field hasRoadOccupation fun(x: number, y: number, level: number): boolean Returns true iff there's a road occupation on the road at a given position and level.
 ---@field hasWire fun(x: number, y: number): boolean Determines whether there is any wire at the given location regardless of the level.
@@ -513,14 +518,14 @@ Tile = Tile
 ---@field isBuildingUntouchable fun(x: number, y: number) Determines whether a RCI building is untouchable. An untouchable building is protected in terms of it won't be replaced by automatically spawned buildings.
 ---@field isBuildingUpgradeInConstruction fun(x: number, y: number): boolean Returns true iff there's a building at a given position that has a pending upgrade right now.
 ---@field isBuildingWorking fun(x: number, y: number): boolean Returns true iff there's a building at a given position that is working right now.  A working building has road connection if needed, is not in construction and is not empty. It also has power and water if needed.
----@field isCoast fun(x: number, y: number) Returns true iff there's land at a given position and water on at least one of the four neighboring tiles.
+---@field isCoast fun(x: number, y: number): boolean Returns true iff there's land at a given position and water on at least one of the four neighboring tiles.
 ---@field isFlat fun(x: number, y: number): boolean Determines whether the ground is flat at a given position. Ground is flat if there is not slope in it.
 ---@field isLand fun(x: number, y: number): boolean Returns true iff there's land (the opposite of water) at a given position.
 ---@field isPipe fun(x: number, y: number): boolean Determines whether there is pipe at the given location.
 ---@field isRoad fun(x: number, y: number, level: number): boolean Returns true if there's a road at a given position and level.
 ---@field isRoadDeco fun(x: number, y: number, level: number): boolean Returns true iff there's a road decoration on the road at a given position and level.
 ---@field isTree fun(x: number, y: number): boolean Returns true iff there's a tree at a given position.
----@field isValid fun(): boolean Returns true iff a position is on the map.
+---@field isValid fun(x: number, y: number): boolean Returns true iff a position is on the map.
 ---@field isWater fun(x: number, y: number): boolean Returns true iff there's water at a given position.
 ---@field isWire fun(x: number, y: number, level?: number): boolean Determines whether there is a wire at the given location and level.
 ---@field pauseBuildingAnimation fun(x: number, y: number, slot?: number): number or nil Pauses an animation that is attached to a building.
@@ -562,24 +567,24 @@ Tile = Tile
 ---@type Util
 Util = Util
 ---@class Util Some general utility functions.
----@field collectRectTiles fun(): array Collects all tile positions along a rectangle. The listing is in clock-wise order and starts at the top left corner of the rectangle.
----@field optStorage fun(src: table, name: string, constructor?: function): any Returns the named content of a storage table.  If no such entry exists it will be created by a given constructor, saved into the table and returned.
----@field unite fun() Unites acces on multiple tables. For read access the value of the first table that contains the queried key will be returned. For write access the value is written into all tables using the provided key.
+---@field collectRectTiles fun(x: number, y: number, w: number, h: number, noCorners?: boolean): array Collects all tile positions along a rectangle. The listing is in clock-wise order and starts at the top left corner of the rectangle.
+---@field optStorage fun(src: table, name: string, constructor?: function): table  Returns the named content of a storage table.  If no such entry exists it will be created by a given constructor, saved into the table and returned.
+---@field unite fun(table1: table, table2?: table, ...?: any) Unites acces on multiple tables. For read access the value of the first table that contains the queried key will be returned. For write access the value is written into all tables using the provided key.
 
+---@class vector : Vector
 ---@type Vector
 Vector = Vector
----@class vector : Vector
 ---@class Vector A 3-dimensional vector implementation that can be used for convenience.
 ---@field Vector.x any X component of the vector.
 ---@field Vector.y any Y component of the vector.
 ---@field Vector.z any Z component of the vector.
----@field __tostring fun() Returns a readable representation of the vector.  Usually used for debug purposes.
----@field copy fun() Returns a 1:1 copy of the vector.
----@field cross fun(): vector Returns the cross product of two vectors a and b.
----@field dot fun(): number Returns the dot product of two vectors a and b.   Formally the dot product of two vectors      a = (a1, a2, a3), b = (b1, b2, b3)   is defined as      a1 * b1 + a2 * b2 + a3 * b3
----@field length fun() Returns the length of the vector.
----@field new fun(): vector Creates a new vector out of the components x, y, z. You may use the alias Vector(x, y, z) instead.
----@field normalized fun() Returns a normalized vector that points in the same direction as self.
+---@field __tostring fun(): string Returns a readable representation of the vector.  Usually used for debug purposes.
+---@field copy fun(): vector Returns a 1:1 copy of the vector.
+---@field cross fun(o: vector): vector Returns the cross product of two vectors a and b.
+---@field dot fun(o: vector): number Returns the dot product of two vectors a and b.   Formally the dot product of two vectors      a = (a1, a2, a3), b = (b1, b2, b3)   is defined as      a1 * b1 + a2 * b2 + a3 * b3
+---@field length fun(): number Returns the length of the vector.
+---@field new fun(x?: number, y?: number, z?: number): vector Creates a new vector out of the components x, y, z. You may use the alias Vector(x, y, z) instead.
+---@field normalized fun(): vector Returns a normalized vector that points in the same direction as self.
 
 ---@type string
 string = string
