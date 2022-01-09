@@ -1,0 +1,20 @@
+{
+    "Lua.diagnostics.globals": [
+        "Tile",
+        "Array",
+        "script",
+        "TheoTown",
+        "Runtime",
+        "Draft",
+        "Translation",
+        "GUI",
+        "Icon",
+        "City",
+        "Builder",
+        "Debug",
+        "Drawing",
+        "Script",
+        "Util",
+        "Vector"
+    ]
+}
