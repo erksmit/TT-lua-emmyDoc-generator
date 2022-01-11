@@ -295,20 +295,20 @@ Draft = Draft
 ---@type Drawing
 Drawing = Drawing
 ---@class Drawing Functions for drawing images and text.
----@field drawImage fun(frame: number, x: number, y: number) Draws a frame.
----@field drawImageRect fun(frame: number, x: number, y: number, w: number, h: number) Draws a frame into a specified rectangle.
+---@field drawImage fun(frame: number|Draft, x: number, y: number) Draws a frame.
+---@field drawImageRect fun(frame: number|Draft, x: number, y: number, w: number, h: number) Draws a frame into a specified rectangle.
 ---@field drawLine fun(x0: number, y0: number, x1: number, y1: number, width?: number) Draws a line.
----@field drawNinePatch fun(frame: number, x: number, y: number, w: number, h: number, sparse?: boolean) Draws a nine patch into a specified rectangle.  A nine patch is a set of 9 frames that are used to draw a rectangle with borders. All parts expect the corners are streched to match accordingly.
+---@field drawNinePatch fun(frame: number|Draft, x: number, y: number, w: number, h: number, sparse?: boolean) Draws a nine patch into a specified rectangle.  A nine patch is a set of 9 frames that are used to draw a rectangle with borders. All parts expect the corners are streched to match accordingly.
 ---@field drawQuad fun(x0: number, y0: number, x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, frame?: number) Draws a quad using four corner points. If no frame is provided a white quad will be drawn.
 ---@field drawRect fun(x: number, y: number, w: number, h: number) Draws a filled rectangle.
 ---@field drawText fun(text: string, x: number, y: number, font?: font, centerX?: number, centerY?: number) Draws a text.
----@field drawTileImage fun(frame: number) Draws a tile frame on the currently set tile.  A tile frame is supposed to lay flat on the ground. The magic of this function is to draw the frame correctly on slopes. Use this function e.g. for drawing tool markers on the ground.
----@field drawTriangle fun(x0: number, y0: number, x1: number, y1: number, x2: number, y2: number, frame?: number) Draws a triangle.  If no frame is provided a white triangle will be drawn. As the game is optimized to draw quads it is more efficient to draw a quad using Drawing.drawQuad rather than drawing two triangles.
+---@field drawTileImage fun(frame: number|Draft) Draws a tile frame on the currently set tile.  A tile frame is supposed to lay flat on the ground. The magic of this function is to draw the frame correctly on slopes. Use this function e.g. for drawing tool markers on the ground.
+---@field drawTriangle fun(x0: number, y0: number, x1: number, y1: number, x2: number, y2: number, frame?: number|Draft) Draws a triangle.  If no frame is provided a white triangle will be drawn. As the game is optimized to draw quads it is more efficient to draw a quad using Drawing.drawQuad rather than drawing two triangles.
 ---@field getAdditive fun(): number Returns the current additive factor for drawing.
 ---@field getAlpha fun(): number Returns the current transparency for drawing.
 ---@field getColor fun(): number, number, number Returns the current drawing color.
----@field getImageHandle fun(frame: number): number, number Returns the handle of an image/frame.
----@field getImageSize fun(frame: number): number, number Returns the size of an image/frame.
+---@field getImageHandle fun(frame: number|Draft): number, number Returns the handle of an image/frame.
+---@field getImageSize fun(frame: number|Draft): number, number Returns the size of an image/frame.
 ---@field getScale fun(): number, number Returns the current scale factors set by setScale.
 ---@field getSize fun(): number, number  Returns the current screen size width, height in pixels. Note that the result may change over time due to resolution changes.
 ---@field getTextSize fun(text: string, font?: font): number, number Queries the drawing size for a given text.
