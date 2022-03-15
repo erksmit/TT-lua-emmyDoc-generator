@@ -2419,7 +2419,6 @@ function Vector:new(x, y, z) end
 function Vector:normalized() end
 
 
----@class string : string
 ---@class string This module extends the functionality contained in the string table for convenience.
 string = string 
 -- Checks whether the string ends with the given string.
