@@ -2440,6 +2440,84 @@ function string.startsWith(part) end
 ---@return string r The string without starting and ending spaces.
 function string.trim() end
 
+---@class car : Car
+---@class Car Car library for TheoTown.
+Car = {} 
+-- Returns an array of smart cars that are owned by the calling draft. Since this is a potentially heavy operatin you should only call it at rare points in time e.g. when a city gets entered.
+---@return Array r An array of cars that belong to the calling draft.
+function Car.getCars() end
 
+-- Spawns a car at a given position/position of a building that drives to the given target/building at the target. The car will actually not be spawned immediately but after a path has been calculated. This happens asynchronously since path calculation can take some time. You can provide a frame to determine the which variant of the car to use in case multiple variants are available. It will be choosen randomly by default.
+---@param carDraft draft 
+---@param startX number 
+---@param startY number 
+---@param targetX number 
+---@param targetY number 
+---@param frame? number 
+---@param storage? table If you provide a table may be empty) here the car will support smart car functionality like extended car event callbacks.          (
+---@param startLevel? number 
+---@param targetLevel? number 
+function Car.spawn(carDraft, startX, startY, targetX, targetY, frame, storage, startLevel, targetLevel) end
+
+-- Signals that the car should be deleted. It may not be deleted immediately due to the asynchronous behavior of car updates.
+function car:despawn() end
+
+-- Will issue a new location for the car to drive to. Listening to smart car events will let you know whether the target can be reached.
+---@param x number The x tile position to target.
+---@param y number The y tile position to target.
+---@param level? number The level to target. By default the game will try to match any the car can drive to e.g. buildings or roads).          (
+function car:driveTo(x, y, level) end
+
+-- Returns the current direction of the car.
+---@return number r The current direction of the car (1=SE, 2=NE, 4=NW, 8=SW)
+function car:getDir() end
+
+-- Returns the car draft of the car.
+---@return draft r The car draft of the car.
+function car:getDraft() end
+
+-- Returns the current effective speed of the car. The effective speed depends on road factors, car factors, target speed factors and so on.
+---@return number r The current effective speed of the car.
+function car:getEffectiveSpeed() end
+
+-- Returns the current frame of the car. The frame is actually the index of the variant determined by the total frames of the car / frames per variant. The first variant has index 0.
+---@return number r The index of the current frame.
+function car:getFrame() end
+
+-- Returns the current height level of the car.
+---@return number r The height level of the car with 0 being ground.
+function car:getLevel() end
+
+-- Returns the current target speed factor of the car.
+---@return number r The current target speed factor of the car.
+function car:getSpeed() end
+
+-- Returns the storage table of the car. The table was provided in the Car.spawn(...) car spawn request. Note that as usual you cannot store functions in the storage table as these cannot be serialized. (that means they won't be there after saving and loading the city)
+---@return table r The storage table of the car.
+function car:getStorage() end
+
+-- Returns the current x tile position of the car.
+---@return number r The x tile position of the car.
+function car:getX() end
+
+-- Returns the current postion and level of the car all at once.
+---@return number,number,number r The x, y tile position and level (0=ground) of the car.
+function car:getXY() end
+
+-- Returns the current y tile position of the car.
+---@return number r The y tile position of the car.
+function car:getY() end
+
+-- Returns true iff this car is valid. You should dispose the handle in case the car is not valid anymore. You cannot respawn it.
+---@return boolean r True iff the car is valid, false otherwise.
+function car:isValid() end
+
+-- Sets the current frame of the car. The frame is actually the index of the variant determined by the total frames of the car / frames per variant. The first variant has index 0.
+---@param frame number The frame to set.
+function car:setFrame(frame) end
+
+-- Returns the current target speed factor of the car.
+---@param speed number The target speed factor of the car. Normal is 1.0.
+function car:setSpeed(speed) end
 
 
