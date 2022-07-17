@@ -15,6 +15,7 @@
         "Drawing",
         "Script",
         "Util",
-        "Vector"
+        "Vector",
+        "Car"
     ]
 }

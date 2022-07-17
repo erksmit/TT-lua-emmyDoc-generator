@@ -1,6 +1,9 @@
 -- tt lua docs
 
 ---@class font
+---@field BIG any
+---@field DEFAULT any
+---@field SMALL any
 Font = {}
 
 Icon = {}
@@ -1515,6 +1518,60 @@ function GUI:setText(text) end
 ---@param state boolean The visibility state to set.
 function GUI:setVisible(state) end
 
+-- Adds a layout to the GUI object
+---@param args table
+---@return gui layout the created layout
+function GUI:addLayout(args) end
+
+-- Adds a canvas to the GUI object
+---@param args table
+---@return gui canvas the created canvas
+function GUI:addCanvas(args) end
+
+-- Adds a label to the GUI object
+---@param args table
+---@return gui label the created label
+function GUI:addLabel(args) end
+
+-- sets the color of the gui
+---@param r number
+---@param g number
+---@param b number
+function GUI:setColor(r, g, b) end
+
+-- Adds a textFrame to the GUI object
+---@param args table
+---@return gui textFrame the created textFrame
+function GUI:addTextFrame(args) end
+
+---@return gui layout the first section of the layout
+function GUI:getFirstPart() end
+
+---@return gui layout the center section of the layout
+function GUI:getCenterPart() end
+
+---@return gui layout the last section of the layout
+function GUI:getLastPart() end
+
+-- adds a button to the GUI object
+---@param args table
+---@return gui button the created button
+function GUI:addButton(args) end
+
+-- adds a listBox to the GUI object
+---@param args table
+---@return gui listBox the created listBox
+function GUI:addListBox(args) end
+
+-- set the alignment of a gui object within its parent
+---@param x number
+---@param y number
+function GUI:setAlignment(x, y) end
+
+-- adds a icon to the GUI object
+---@param args table
+---@return gui icon the created icon
+function GUI:addIcon(args) end
 
 ---@class runtime : Runtime
 ---@class Runtime Functions to access general runtime information.
@@ -1682,7 +1739,7 @@ function script:drawCity() end
 -- Will be called on all scripts before script:init(). Use this method to set up early things.
 function script:earlyInit() end
 
--- Will be called when the user taps on the map. Will be called just before the tap is handled by the current tool.
+-- Will be called when the user taps on the map. Will be called just before the tap is handled by the current tool. Let it return false in case you do not want the current tool to handle this tap.
 ---@param tileX number 
 ---@param tileY number 
 ---@param x number 
@@ -1755,6 +1812,30 @@ function script:nextMonth() end
 -- Will be called on a yearly basis for each script.
 function script:nextYear() end
 
+-- Gets called for smart cars when the car was despawned.
+---@param car car A car object that can be used to control the car.
+function script:onCarDespawned(car) end
+
+-- Gets called for smart cars when a car did not find a way.
+---@param car car A car object that can be used to control the car.
+function script:onCarFoundNoWay(car) end
+
+-- Gets called for smart cars when the car found a way to a destination.
+---@param car car A car object that can be used to control the car.
+function script:onCarFoundWay(car) end
+
+-- Gets called for smart cars when the car could not be spawned. The provided storage table of the not spawned car can be used to identify which City.spawnCar request failed.
+---@param storage table The storage table that was used in City.spawnCar...)
+function script:onCarNotSpawned(storage) end
+
+-- Gets called for smart cars when the car reached it's destination.
+---@param car car A car object that can be used to control the car.
+function script:onCarReached(car) end
+
+-- Gets called for smart cars when the car was spawned.
+---@param car car A car object that can be used to control the car.
+function script:onCarSpawned(car) end
+
 -- Will be called once per frame after UI has been drawn. Will also be called outside of cities.
 function script:overlay() end
 
@@ -1781,8 +1862,6 @@ function script:unload() end
 
 -- Will be called per frame for each script while a city is open. Can be used to draw stuff on the screen (under the UI). Use overlay() do draw on top of UI and/or outside of cities.
 function script:update() end
-
-
 
 ---@class theotown : TheoTown
 ---@class TheoTown TheoTown specific functions that don't fit into other libraries.
@@ -2368,7 +2447,7 @@ function Util.collectRectTiles(x, y, w, h, noCorners) end
 -- Returns the named content of a storage table. If no such entry exists it will be created by a given constructor, saved into the table and returned.
 ---@param src table Source table.
 ---@param name string Name of the entry to load.
----@param constructor? function A function that returns a new object or the object itself.          
+---@param constructor? function | table A function that returns a new object or the object itself.          
 ---@return any r The object that's effectively in src[name] after the call.
 function Util.optStorage(src, name, constructor) end
 
@@ -2442,7 +2521,7 @@ function string.trim() end
 
 ---@class car : Car
 ---@class Car Car library for TheoTown.
-Car = {} 
+Car = {}
 -- Returns an array of smart cars that are owned by the calling draft. Since this is a potentially heavy operatin you should only call it at rare points in time e.g. when a city gets entered.
 ---@return Array r An array of cars that belong to the calling draft.
 function Car.getCars() end
@@ -2460,64 +2539,64 @@ function Car.getCars() end
 function Car.spawn(carDraft, startX, startY, targetX, targetY, frame, storage, startLevel, targetLevel) end
 
 -- Signals that the car should be deleted. It may not be deleted immediately due to the asynchronous behavior of car updates.
-function car:despawn() end
+function Car:despawn() end
 
 -- Will issue a new location for the car to drive to. Listening to smart car events will let you know whether the target can be reached.
 ---@param x number The x tile position to target.
 ---@param y number The y tile position to target.
 ---@param level? number The level to target. By default the game will try to match any the car can drive to e.g. buildings or roads).          (
-function car:driveTo(x, y, level) end
+function Car:driveTo(x, y, level) end
 
 -- Returns the current direction of the car.
 ---@return number r The current direction of the car (1=SE, 2=NE, 4=NW, 8=SW)
-function car:getDir() end
+function Car:getDir() end
 
 -- Returns the car draft of the car.
 ---@return draft r The car draft of the car.
-function car:getDraft() end
+function Car:getDraft() end
 
 -- Returns the current effective speed of the car. The effective speed depends on road factors, car factors, target speed factors and so on.
 ---@return number r The current effective speed of the car.
-function car:getEffectiveSpeed() end
+function Car:getEffectiveSpeed() end
 
 -- Returns the current frame of the car. The frame is actually the index of the variant determined by the total frames of the car / frames per variant. The first variant has index 0.
 ---@return number r The index of the current frame.
-function car:getFrame() end
+function Car:getFrame() end
 
 -- Returns the current height level of the car.
 ---@return number r The height level of the car with 0 being ground.
-function car:getLevel() end
+function Car:getLevel() end
 
 -- Returns the current target speed factor of the car.
 ---@return number r The current target speed factor of the car.
-function car:getSpeed() end
+function Car:getSpeed() end
 
 -- Returns the storage table of the car. The table was provided in the Car.spawn(...) car spawn request. Note that as usual you cannot store functions in the storage table as these cannot be serialized. (that means they won't be there after saving and loading the city)
 ---@return table r The storage table of the car.
-function car:getStorage() end
+function Car:getStorage() end
 
 -- Returns the current x tile position of the car.
 ---@return number r The x tile position of the car.
-function car:getX() end
+function Car:getX() end
 
 -- Returns the current postion and level of the car all at once.
 ---@return number,number,number r The x, y tile position and level (0=ground) of the car.
-function car:getXY() end
+function Car:getXY() end
 
 -- Returns the current y tile position of the car.
 ---@return number r The y tile position of the car.
-function car:getY() end
+function Car:getY() end
 
 -- Returns true iff this car is valid. You should dispose the handle in case the car is not valid anymore. You cannot respawn it.
 ---@return boolean r True iff the car is valid, false otherwise.
-function car:isValid() end
+function Car:isValid() end
 
 -- Sets the current frame of the car. The frame is actually the index of the variant determined by the total frames of the car / frames per variant. The first variant has index 0.
 ---@param frame number The frame to set.
-function car:setFrame(frame) end
+function Car:setFrame(frame) end
 
 -- Returns the current target speed factor of the car.
 ---@param speed number The target speed factor of the car. Normal is 1.0.
-function car:setSpeed(speed) end
+function Car:setSpeed(speed) end
 
 
