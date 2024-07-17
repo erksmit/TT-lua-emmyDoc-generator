@@ -11,6 +11,8 @@ public record struct ModuleHeader
 
 public record struct Module()
 {
+    public ModuleHeader Header { get; set; }
+    
     public List<Field> Fields { get; set; } = [];
     
     public List<Function> Functions { get; set; } = [];
