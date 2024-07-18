@@ -16,4 +16,20 @@ public static class Extensions
 
         return null;
     }
+
+    public static string TrimAll(this string str)
+    {
+        return str.Trim().Replace("\n", " ").Replace("  ", " ");
+    }
+
+    public static string RemoveChar(this string str, params char[] characters)
+    {
+        string result = str;
+        foreach (var chr in characters)
+        {
+            result = result.Replace(chr.ToString(), string.Empty);
+        }
+
+        return result;
+    }
 }
