@@ -1,0 +1,15 @@
+{
+    "Lua.diagnostics.globals": [
+        "Translation",
+        "script"
+    ],
+    "Lua.diagnostics.disable": [
+        "duplicate-set-field"
+    ],
+    "Lua.workspace.library": [
+        ".vscode/theoDocs.lua"
+    ],
+    "files.associations": {
+        "*.json": "jsonc"
+    }
+}
