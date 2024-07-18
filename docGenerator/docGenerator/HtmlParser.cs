@@ -5,7 +5,7 @@ namespace docGenerator;
 public class HtmlParser
 {
     const string baseUrl = "https://doc.theotown.com";
-    private HttpClient client = new() { BaseAddress = new Uri(baseUrl) };
+    private HttpClient client = new() { BaseAddress = new Uri(baseUrl), DefaultRequestHeaders = {{"User-Agent", "erksmit's amazing documentation generator"}}};
     
     public async Task<List<ModuleHeader>> GetModuleHeaders()
     {
@@ -27,7 +27,6 @@ public class HtmlParser
 
             ModuleHeader header = new() { Name = name, Description = description, Path = uri };
             headers.Add(header);
-            Console.WriteLine(header);
         }
         return headers;
     }
@@ -39,6 +38,8 @@ public class HtmlParser
         doc.LoadHtml(pageStr);
         var fnHeaderNodes = doc.DocumentNode.SelectNodes("//dt");
 
+        bool isBuildingModule = header.Name == "Building";
+        
         Module module = new() { Header = header };
         foreach (var headerNode in fnHeaderNodes)
         {
@@ -59,10 +60,12 @@ public class HtmlParser
                     Description = description,
                     Static = !rawFieldName.Contains(':') // a : indicates a non-static function like script:disable
                 };
+                if (isBuildingModule) // override for building module as it's not the same in the site
+                    fn.Static = false;
 
                 fn.Name = fn.Static
                     ? fieldName
-                    : fieldName.Remove(0, fieldName.IndexOf(':', StringComparison.Ordinal) + 1); // filter the modulename: prefix of the function name out
+                    : fieldName.Split(':').Last(); // filter the modulename: prefix of the function name out
 
                 // Get parameters, if any
                 var parameterHeaderNode = detailsNode.ChildNodes.FirstOrDefault(n => n.InnerText == "Parameters:");
@@ -78,11 +81,11 @@ public class HtmlParser
                         param.Name = paramNameNode.InnerText;
                         
                         var paramTypeNodes = paramBaseNode.ChildNodes.Where(n => n.GetClasses().Contains("types"));
-                        param.Types.AddRange(paramTypeNodes.Select(n => n.InnerText));
+                        param.Types.AddRange(paramTypeNodes.SelectMany(n => n.InnerText.Split(" or ")));
                         if (param.Types.Count == 0)
                             param.Types.Add("any");
 
-                        param.Optional = paramBaseNode.ChildNodes.Any(n => n.Name == "em" && n.InnerText == "optional");
+                        param.Optional = paramBaseNode.ChildNodes.Any(n => n.Name == "em" && (n.InnerText == "optional" || n.InnerText == "default"));   
 
                         var paramDescParts = paramBaseNode.ChildNodes
                             .Where(n => n.Name != "span" && !string.IsNullOrEmpty(n.InnerText)).Select(n => n.InnerText)
@@ -107,7 +110,7 @@ public class HtmlParser
                         Parameter returns = new();
                         
                         var returnTypeNodes = returnBaseNode.ChildNodes.Where(n => n.GetClasses().Contains("types"));
-                        returns.Types.AddRange(returnTypeNodes.Select(n => n.InnerText));
+                        returns.Types.AddRange(returnTypeNodes.SelectMany(n => n.InnerText.Split(" or ")));
                         if (returns.Types.Count == 0)
                             returns.Types.Add("any");
                         
@@ -129,7 +132,7 @@ public class HtmlParser
                 if (fieldName.Contains('.'))
                 {
                     stat = false;
-                    fieldName = fieldName.Remove(0, fieldName.IndexOf('.', StringComparison.Ordinal) + 1);
+                    fieldName = fieldName.Remove(0, fieldName.IndexOf('.') + 1);
                 }
                 Field field = new()
                 {

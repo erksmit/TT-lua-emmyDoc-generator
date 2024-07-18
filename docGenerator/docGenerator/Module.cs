@@ -16,6 +16,21 @@ public record struct Module()
     public List<Field> Fields { get; set; } = [];
     
     public List<Function> Functions { get; set; } = [];
+
+    public Module GetParts(bool statics)
+    {
+        return new Module
+        {
+            Header = Header,
+            Fields = Fields.Where(f => f.Static == statics).ToList(),
+            Functions = Functions.Where(f => f.Static == statics).ToList()
+        };
+    }
+
+    public bool HasParts()
+    {
+        return Fields.Any() || Functions.Any();
+    }
 }
 
 public record struct Field()
