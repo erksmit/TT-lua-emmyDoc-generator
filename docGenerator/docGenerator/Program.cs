@@ -15,9 +15,9 @@ foreach (var header in headers)
 
 CatsDocConverter converter = new();
 string docs = converter.GetDocs(modules);
-Directory.CreateDirectory("result");
-File.WriteAllText("result/theoDocs.lua", docs);
-File.WriteAllText("result/settings.json", """
+Directory.CreateDirectory("../../../../../docs");
+File.WriteAllText("../../../../../docs/theoDocs.lua", docs);
+File.WriteAllText("../../../../../docs/settings.json", """
                                    {
                                        "Lua.diagnostics.globals": [
                                            "Translation",
