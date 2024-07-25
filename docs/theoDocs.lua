@@ -1,22 +1,6 @@
 -- tt lua docs
 ---@meta
 
----@alias frame number
----@alias font number
----@alias bool boolean
----@alias int integer
----@alias float number
----@alias animationdraft draft
-
----@class Font
----@field BIG font
----@field DEFAULT font
----@field SMALL font
-Font = {}
-
-Icon = {}
-NinePatch = {}
-
 ---@class Array A set of tools to extend Lua's quite simple arrays with more intuitive, traditional methods.
 Array = {}
 ---@alias array Array
@@ -93,7 +77,7 @@ function Array:last(predicate) end
 ---@return array r The mapped array.
 function Array:map(mapFunction) end
 
--- Returns a random element of the array. Returns if the array is empty.
+-- Returns a random element of the array. Returns nil if the array is empty.
 ---@return any r Randomly selected element.
 function Array:pick() end
 
@@ -1300,7 +1284,7 @@ function Draft.append(json) end
 ---@param ...? any (optional)
 function Draft.callAll(name, arg1, arg2, ...) end
 
--- Returns the draft of the given id. is returned if no draft of the given id was found.
+-- Returns the draft of the given id. nil is returned if no draft of the given id was found.
 ---@param id string 
 ---@return draft r 
 function Draft.getDraft(id) end
@@ -1400,7 +1384,7 @@ function Draft:getPreviewFrameCount() end
 ---@return int r 
 function Draft:getPrice() end
 
--- Returns an array of all attached scripts to this draft. modify the returned array.
+-- Returns an array of all attached scripts to this draft. Do not modify the returned array.
 ---@return array r 
 function Draft:getScripts() end
 
@@ -1440,23 +1424,23 @@ function Draft:getWidth() end
 ---@return bool r True if the road draft has road decorations
 function Draft:hasDecorations() end
 
--- Returns iff the draft defines an animation.
+-- Returns true iff the draft defines an animation.
 ---@return bool r 
 function Draft:isAnimation() end
 
--- Returns iff the draft defines a building.
+-- Returns true iff the draft defines a building.
 ---@return bool r 
 function Draft:isBuilding() end
 
--- Returns iff the draft defines a car.
+-- Returns true iff the draft defines a car.
 ---@return bool r 
 function Draft:isCar() end
 
--- Returns iff the draft defines a category.
+-- Returns true iff the draft defines a category.
 ---@return bool r 
 function Draft:isCategory() end
 
--- Returns iff the draft defines a commercial building.
+-- Returns true iff the draft defines a commercial building.
 ---@return bool r 
 function Draft:isCommercial() end
 
@@ -1464,15 +1448,15 @@ function Draft:isCommercial() end
 ---@return bool r True iff the building is a composition.
 function Draft:isComposition() end
 
--- Returns iff the draft is declared as final (isFinal in json definition). Cannot be altered during runtime.
+-- Returns true iff the draft is declared as final (isFinal in json definition). Cannot be altered during runtime.
 ---@return bool r True iff this draft is final.
 function Draft:isFinal() end
 
--- Returns iff the draft defines a ground type.
+-- Returns true iff the draft defines a ground type.
 ---@return bool r 
 function Draft:isGround() end
 
--- Returns iff the draft defines a industrial building.
+-- Returns true iff the draft defines a industrial building.
 ---@return bool r 
 function Draft:isIndustrial() end
 
@@ -1488,27 +1472,27 @@ function Draft:isPlugin() end
 ---@return bool r True iff the draft is privileged
 function Draft:isPrivileged() end
 
--- Returns iff the draft defines a building that is either residential, commercial or industrial.
+-- Returns true iff the draft defines a building that is either residential, commercial or industrial.
 ---@return bool r 
 function Draft:isRCI() end
 
--- Returns iff the draft defines a residential building.
+-- Returns true iff the draft defines a residential building.
 ---@return bool r 
 function Draft:isResidential() end
 
--- Returns iff the draft defines a road.
+-- Returns true iff the draft defines a road.
 ---@return bool r 
 function Draft:isRoad() end
 
--- Returns iff the draft defines a road decoration.
+-- Returns true iff the draft defines a road decoration.
 ---@return bool r 
 function Draft:isRoadDecoration() end
 
--- Returns iff the draft defines a draft template.
+-- Returns true iff the draft defines a draft template.
 ---@return bool r 
 function Draft:isTemplate() end
 
--- Returns iff the draft defines a tree.
+-- Returns true iff the draft defines a tree.
 ---@return bool r 
 function Draft:isTree() end
 
@@ -1516,7 +1500,7 @@ function Draft:isTree() end
 ---@return bool r True iff this draft is unlocked.
 function Draft:isUnlocked() end
 
--- Returns iff the draft is visible (corresponds to negated hidden attribute in json).
+-- Returns true iff the draft is visible (corresponds to negated hidden attribute in json).
 ---@return bool r 
 function Draft:isVisible() end
 
@@ -1880,7 +1864,7 @@ function GUI:getId() end
 ---@return number r Padding on the bottom side.
 function GUI:getPadding() end
 
--- Returns the parent GUI object of this object. Can be if this is the root object or if this object is not valid anymore (that means not part of the active GUI hierarchy).
+-- Returns the parent GUI object of this object. Can be nil if this is the root object or if this object is not valid anymore (that means not part of the active GUI hierarchy).
 ---@return gui r The parent GUI object.
 function GUI:getParent() end
 
@@ -2150,7 +2134,7 @@ function Runtime.toJson(table) end
 Script = {}
 ---@alias script Script
 
--- Returns the current script or if no script is running right now. Since scripts are executed synchronously to avoid race conditions there can only be one script running.
+-- Returns the current script or nil if no script is running right now. Since scripts are executed synchronously to avoid race conditions there can only be one script running.
 ---@return script r 
 function Script.getScript() end
 
@@ -2186,7 +2170,7 @@ function Script:getLocation() end
 ---@return string r 
 function Script:getName() end
 
--- Returns the parent script if there is any, otherwise. A parent script is the script that instantiated this script using Scripts are usually not instantiated by other scripts.
+-- Returns the parent script if there is any, nil otherwise. A parent script is the script that instantiated this script using Scripts are usually not instantiated by other scripts.
 ---@return script r 
 function Script:getParent() end
 
