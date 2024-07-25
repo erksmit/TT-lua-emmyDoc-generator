@@ -11,4 +11,15 @@
       <PackageReference Include="HtmlAgilityPack" Version="1.11.61" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="settings.json" />
+      <Content Include="settings.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="patches.lua" />
+      <Content Include="patches.lua">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>
