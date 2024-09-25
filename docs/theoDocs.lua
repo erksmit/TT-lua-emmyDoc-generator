@@ -1456,6 +1456,10 @@ function Draft:isFinal() end
 ---@return bool r 
 function Draft:isGround() end
 
+-- Returns true if the draft has "index" set to true. This is the default for non privileged drafts.
+---@return bool r True if index flag is set.
+function Draft:isIndexed() end
+
 -- Returns true iff the draft defines a industrial building.
 ---@return bool r 
 function Draft:isIndustrial() end
@@ -1761,9 +1765,10 @@ function GUI:addButton(args) end
 ---@return gui r The created canvas object.
 function GUI:addCanvas(args) end
 
--- Adds a hotkey to a GUI object. If the button gets pressed the GUI objects onClick callback function will be called. Usually used for buttons.
+-- Adds a hotkey to a GUI object. If the button gets pressed the GUI object's onClick callback function will be called. Usually used for buttons.
 ---@param key number A keycode as defined in the Keys table.
-function GUI:addHotkey(key) end
+---@param mod? string A modifier key code/name. (default nil)
+function GUI:addHotkey(key, mod) end
 
 -- Adds an icon object. See the for more information.
 ---@param args table A table that contains the GUI object creation parameters.
@@ -1919,8 +1924,9 @@ function GUI:layout() end
 
 -- Removes a hotkey from the GUI object.
 ---@param key number The keycode of a key to remove.
+---@param mod? string The modifier of a key to remove. (default nil)
 ---@return bool r Returns true iff such a hotkey was actually assigned.
-function GUI:removeHotkey(key) end
+function GUI:removeHotkey(key, mod) end
 
 -- Marks a text field as active, meaning that it will be focused for user input.
 function GUI:setActive() end
@@ -2193,6 +2199,22 @@ function Script:isActive() end
 -- Activates or disables the script. No event methods will be called on disabled scripts. A disabled script cannot re-enable itself since it won't be updated anymore.
 ---@param state bool 
 function Script:setActive(state) end
+
+-- For building drafts: Will be called by the building tool the moment after drawing the building preview.
+---@param x int The x coordinate where the building is intended to be built.
+---@param y int The y coordinate where the building is intended to be built.
+---@param frame int The current frame that will be used to draw the building.
+---@param buildable bool Signals if the building is currently considered buildable.
+---@param draft draft The building that is about to be built.
+function Script:afterToolDrawing(x, y, frame, buildable, draft) end
+
+-- For building drafts: Will be called by the building tool the moment before drawing the building preview.
+---@param x int The x coordinate where the building is intended to be built.
+---@param y int The y coordinate where the building is intended to be built.
+---@param frame int The current frame that will be used to draw the building.
+---@param buildable bool Signals if the building is currently considered buildable.
+---@param draft draft The building that is about to be built.
+function Script:beforeToolDrawing(x, y, frame, buildable, draft) end
 
 -- Will be called after the city GUI was built. When entering the city stage this method will not always be called due to GUI caching.
 function Script:buildCityGUI() end

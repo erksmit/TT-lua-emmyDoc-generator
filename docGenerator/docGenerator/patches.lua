@@ -36,3 +36,9 @@ function GUI:setColor(r, g, b) end
 ---@return gui layout
 ---@nodiscard
 function GUI:getFirstPart() end
+
+-- Sets a building icon for the specified building. Note that game building icons have higher precedence than custom ones.
+---@param x int X component of a building position.
+---@param y int Y component of a building position.
+---@param icon? string | draft An animation draft to use as icon. Use nil to reset.
+function Tile.setBuildingIcon(x, y, icon) end
