@@ -50,7 +50,7 @@ public class HtmlParser
 
             string fieldName = nameNode.Attributes["name"].Value;
             var detailsNode = headerNode.NextSiblingWhere(n => n.Name == "dd")!;
-            var descriptionParts = detailsNode.ChildNodes.Where(n => n.NodeType == HtmlNodeType.Text || n.Name == "em").Select(n => n.InnerText);
+            var descriptionParts = detailsNode.ChildNodes.Where(n => n.NodeType == HtmlNodeType.Text || n.Name == "em" || n.Name == "strong").Select(n => n.InnerText);
             string description = string.Concat(descriptionParts).TrimAll();
 
             if (isFn)

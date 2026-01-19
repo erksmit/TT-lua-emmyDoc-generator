@@ -6,27 +6,11 @@ public class CatsDocConverter
 {
     public string GetDocs(List<Module> modules)
     {
-        return $$"""
+        return $"""
                  -- tt lua docs
                  ---@meta
                  
-                 ---@alias frame number
-                 ---@alias font number
-                 ---@alias bool boolean
-                 ---@alias int integer
-                 ---@alias float number
-                 ---@alias animationdraft draft
-                 
-                 ---@class Font
-                 ---@field BIG font
-                 ---@field DEFAULT font
-                 ---@field SMALL font
-                 Font = {}
-                 
-                 Icon = {}
-                 NinePatch = {}
-                 
-                 {{string.Join("\r\n", modules.Select(GetModule))}}
+                 {string.Join("\r\n", modules.Select(GetModule))}
                  """;
     }
 
