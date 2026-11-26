@@ -4,8 +4,8 @@ namespace docGenerator;
 
 public class HtmlParser
 {
-    const string baseUrl = "https://doc.theotown.com";
-    private HttpClient client = new() { BaseAddress = new Uri(baseUrl), DefaultRequestHeaders = {{"User-Agent", "erksmit's amazing documentation generator"}}};
+    private const string BASE_URL = "https://doc.theotown.com";
+    private readonly HttpClient client = new() { BaseAddress = new Uri(BASE_URL), DefaultRequestHeaders = {{"User-Agent", "erksmit's amazing documentation generator"}}};
     
     public async Task<List<ModuleHeader>> GetModuleHeaders()
     {
@@ -33,6 +33,7 @@ public class HtmlParser
 
     public async Task<Module> GetModule(ModuleHeader header)
     {
+        Console.WriteLine("Fetching module " + header.Name);
         var pageStr = await (await client.GetAsync(header.Path)).Content.ReadAsStringAsync();
         var doc = new HtmlDocument();
         doc.LoadHtml(pageStr);
@@ -65,84 +66,109 @@ public class HtmlParser
 
                 fn.Name = fn.Static
                     ? fieldName
-                    : fieldName.Split(':').Last(); // filter the modulename: prefix of the function name out
+                    : fieldName.Split(':').Last(); // filter the modulename:functionname prefix of the function name out
 
-                // Get parameters, if any
-                var parameterHeaderNode = detailsNode.ChildNodes.FirstOrDefault(n => n.InnerText == "Parameters:");
-                if (parameterHeaderNode != null)
-                {
-                    var paramListNode = parameterHeaderNode.NextSiblingWhere(n => n.Name == "ul")!;
-                    var paramBaseNodes = paramListNode.ChildNodes.Where(n => n.Name == "li");
-                    foreach (var paramBaseNode in paramBaseNodes)
-                    {
-                        Parameter param = new();
-                        
-                        var paramNameNode = paramBaseNode.ChildNodes.First(n => n.GetClasses().Contains("parameter"));
-                        param.Name = paramNameNode.InnerText;
-                        
-                        var paramTypeNodes = paramBaseNode.ChildNodes.Where(n => n.GetClasses().Contains("types"));
-                        param.Types.AddRange(paramTypeNodes.SelectMany(n => n.InnerText.Split(" or ")));
-                        if (param.Types.Count == 0)
-                            param.Types.Add("any");
-
-                        param.Optional = paramBaseNode.ChildNodes.Any(n => n.Name == "em" && (n.InnerText == "optional" || n.InnerText == "default"));   
-
-                        var paramDescParts = paramBaseNode.ChildNodes
-                            .Where(n => n.Name != "span" && !string.IsNullOrEmpty(n.InnerText)).Select(n => n.InnerText)
-                            .ToArray();
-                        var desc = string.Concat(paramDescParts).TrimAll();
-                        param.Description = desc;
-                        
-                        fn.Parameters.Add(param);
-                    }
-                }
-
-                // get return value(s)
-                var returnsHeaderNode = detailsNode.ChildNodes.FirstOrDefault(n => n.InnerText == "Returns:");
-                if (returnsHeaderNode != null)
-                {
-                    var returnsListNode = returnsHeaderNode.NextSiblingWhere(n => n.Name == "ol")!;
-                    var returnBaseNodes = returnsListNode.ChildNodes.Where(n => n.Name == "li").ToArray();
-                    if (!returnBaseNodes.Any()) // functions with only 1 return value will not have the returns wrapped in a <li>
-                        returnBaseNodes = [returnsListNode];
-                    foreach (var returnBaseNode in returnBaseNodes)
-                    {
-                        Parameter returns = new();
-                        
-                        var returnTypeNodes = returnBaseNode.ChildNodes.Where(n => n.GetClasses().Contains("types"));
-                        returns.Types.AddRange(returnTypeNodes.SelectMany(n => n.InnerText.Split(" or ")));
-                        if (returns.Types.Count == 0)
-                            returns.Types.Add("any");
-                        
-                        var returnDescParts = returnBaseNode.ChildNodes
-                            .Where(n => n.Name != "span" && !string.IsNullOrEmpty(n.InnerText)).Select(n => n.InnerText)
-                            .ToArray();
-                        var desc = string.Concat(returnDescParts).TrimAll();
-                        returns.Description = desc;
-                        
-                        fn.Returns.Add(returns);
-                    }
-                }
-
+                fn.Parameters = ParseParameters(detailsNode);
+                fn.Returns = ParseReturnTypes(detailsNode);
                 module.Functions.Add(fn);
+                Console.WriteLine("parsed function: "  + rawFieldName);
             }
-            else // the object is not a function
+            else // the object is not a function but rather a field.
             {
-                bool stat = true;
-                if (fieldName.Contains('.'))
-                {
-                    stat = false;
-                    fieldName = fieldName.Remove(0, fieldName.IndexOf('.') + 1);
-                }
-                Field field = new()
-                {
-                    Name = fieldName,
-                    Description = detailsNode.InnerText.TrimAll(),
-                    Static = stat
-                };
+                var field = ParseField(fieldName, detailsNode);
                 module.Fields.Add(field);
+                Console.WriteLine("parsed field: " + fieldName);
             }
         }
         return module;
+    }
+
+    private static List<Parameter> ParseParameters(HtmlNode detailsNode)
+    {
+        var parameters = new List<Parameter>();
+        
+        // Get parameters, if any
+        var parameterHeaderNode = detailsNode.ChildNodes.FirstOrDefault(n => n.InnerText == "Parameters:");
+        if (parameterHeaderNode != null)
+        {
+            var paramListNode = parameterHeaderNode.NextSiblingWhere(n => n.Name == "ul")!;
+            var paramBaseNodes = paramListNode.ChildNodes.Where(n => n.Name == "li");
+            foreach (var paramBaseNode in paramBaseNodes)
+            {
+                Parameter param = new();
+                        
+                var paramNameNode = paramBaseNode.ChildNodes.First(n => n.GetClasses().Contains("parameter"));
+                param.Name = paramNameNode.InnerText;
+                        
+                var paramTypeNodes = paramBaseNode.ChildNodes.Where(n => n.GetClasses().Contains("types"));
+                param.Types.AddRange(paramTypeNodes.SelectMany(n => n.InnerText.Split(" or ")));
+                if (param.Types.Count == 0)
+                    param.Types.Add("any");
+
+                param.Optional = paramBaseNode.ChildNodes.Any(n => n.Name == "em" && n.InnerText is "optional" or "default");
+
+                var paramDescParts = paramBaseNode.ChildNodes
+                    .Where(n => n.Name != "span" && !string.IsNullOrEmpty(n.InnerText)).Select(n => n.InnerText)
+                    .ToArray();
+                var desc = string.Concat(paramDescParts).TrimAll();
+                param.Description = desc;
+                        
+                parameters.Add(param);
+            }
+        }
+
+        return parameters;
+    }
+
+    private static List<Parameter> ParseReturnTypes(HtmlNode detailsNode)
+    {
+        var values = new List<Parameter>();
+        
+        // get return value(s)
+        var returnsHeaderNode = detailsNode.ChildNodes.FirstOrDefault(n => n.InnerText == "Returns:");
+        if (returnsHeaderNode != null)
+        {
+            var returnsListNode = returnsHeaderNode.NextSiblingWhere(n => n.Name == "ol")!;
+            var returnBaseNodes = returnsListNode.ChildNodes.Where(n => n.Name == "li").ToArray();
+            if (returnBaseNodes.Length == 0) // functions with only 1 return value will not have the returns wrapped in a <li>
+                returnBaseNodes = [returnsListNode];
+            foreach (var returnBaseNode in returnBaseNodes)
+            {
+                Parameter returns = new();
+                        
+                var returnTypeNodes = returnBaseNode.ChildNodes.Where(n => n.GetClasses().Contains("types"));
+                returns.Types.AddRange(returnTypeNodes.SelectMany(n => n.InnerText.Split(" or ")));
+                if (returns.Types.Count == 0)
+                    returns.Types.Add("any");
+                        
+                var returnDescParts = returnBaseNode.ChildNodes
+                    .Where(n => n.Name != "span" && !string.IsNullOrEmpty(n.InnerText)).Select(n => n.InnerText)
+                    .ToArray();
+                var desc = string.Concat(returnDescParts).TrimAll();
+                returns.Description = desc;
+                        
+                values.Add(returns);
+            }
+        }
+
+        return values;
+    }
+
+    private static Field ParseField(string fieldName, HtmlNode detailsNode)
+    {
+        bool isStatic = true;
+        if (fieldName.Contains('.'))
+        {
+            isStatic = false;
+            fieldName = fieldName.Remove(0, fieldName.IndexOf('.') + 1);
+        }
+        Field field = new()
+        {
+            Name = fieldName,
+            Description = detailsNode.InnerText.TrimAll(),
+            Static = isStatic
+        };
+        
+        return field;
     }
 }
