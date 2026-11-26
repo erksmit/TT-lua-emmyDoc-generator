@@ -5,6 +5,7 @@ using docGenerator;
 
 HtmlParser parser = new();
 var headers = await parser.GetModuleHeaders();
+Console.WriteLine("Got module headers");
 
 List<Module> modules = new();
 foreach (var header in headers)
